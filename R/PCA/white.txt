@@ -1,0 +1,13 @@
+07b7d5d5-916e-4744-8366-9dbba5ee32bb.FPKM.txt
+9ae1330c-a197-416a-9d5f-3ca16b36ec90.FPKM.txt
+33fef46f-c248-4d58-bb6e-3a4a55272334.FPKM.txt
+34dd2d8f-6b3c-42ec-94c6-2c3eb75e8b91.FPKM.txt
+9151bbcc-ecef-40fc-8834-e24ff848e1a2.FPKM.txt
+9350b57b-9f7b-43c6-a42b-9ddae857af0a.FPKM.txt
+00511204-3512-4a5e-b664-60271e968903.FPKM.txt
+8682197b-7b3d-4d3f-8f3d-8be702aa02fd.FPKM.txt
+aa47670a-4c3f-468a-b2d3-9d7b1d60845e.FPKM.txt
+be0d2e41-7373-4fa9-9c05-877e9ddcb88c.FPKM.txt
+d6bbcaba-61a7-4360-bc15-1426f8eafa82.FPKM.txt
+e2c8d95e-1e56-4b01-a818-7eccc0059d6e.FPKM.txt
+ee7d6b4b-a341-4a9b-9a3a-38526e749cdd.FPKM.txt
