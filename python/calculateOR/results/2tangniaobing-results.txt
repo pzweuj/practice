@@ -1,0 +1,6 @@
+min totalor:0.5185
+50% split totalor:39.3501113834
+80% split totalor:95.051975595
+90% split totalor:147.789487423
+max totalor:2416.3939861
+totalfreq:1.0
