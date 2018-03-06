@@ -12,15 +12,15 @@ for line in gDNA:
 		start = loc1.split('_')[0]
 		end_t = loc1.split('_')[1]
 		end = end_t.split('ins')[0]
-		ref = '-'
 		alt = end_t.split('ins')[1]
+		ref = alt[0]
 
 		# print chr, start, end, ref, alt
 	elif loc1.__contains__('del'):
 		start = loc1.split('del')[0]
-		alt = '-\n'
 		ref = loc1.split('del')[1].split('\n')[0]
 		end = str(int(start) + len(ref))
+		alt = ref[0] + '\n'
 
 	else:
 		loc2 = loc1.split('>')
