@@ -1,0 +1,402 @@
+1	115256528	115256528	T	A	Pathogenic	not_provided
+1	115256528	115256528	T	A	Likely pathogenic	Glioblastoma
+1	115256528	115256528	T	A	Likely pathogenic	Acute_myeloid_leukemia
+1	115256528	115256528	T	A	Likely pathogenic	Hepatocellular_carcinoma
+1	115256528	115256528	T	A	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+1	115256528	115256528	T	A	Likely pathogenic	Nasopharyngeal_Neoplasms
+1	115256528	115256528	T	A	Likely pathogenic	Multiple_myeloma
+1	115256528	115256528	T	A	Likely pathogenic	Adrenocortical_carcinoma
+1	115256528	115256528	T	A	Likely pathogenic	Malignant_melanoma_of_skin
+1	115256528	115256528	T	A	Likely pathogenic	Ovarian_Serous_Cystadenocarcinoma
+1	115256528	115256528	T	A	Likely pathogenic	Chronic_lymphocytic_leu
+1	115256529	115256529	T	A	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+1	115256529	115256529	T	A	Likely pathogenic	Colorectal_Neoplasms
+1	115256529	115256529	T	A	Likely pathogenic	Glioblastoma
+1	115256529	115256529	T	A	Likely pathogenic	Hepatocellular_carcinoma
+1	115256529	115256529	T	A	Likely pathogenic	Acute_myeloid_leukemia
+1	115256529	115256529	T	A	Likely pathogenic	Renal_cell_carcinoma
+1	115256529	115256529	T	A	Likely pathogenic	Multiple_myeloma
+1	115256529	115256529	T	A	Likely pathogenic	Ovarian_Serous_Cystadenocarcinoma
+1	115256529	115256529	T	A	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+1	115256529	115256529	T	A	Likely pathogenic	Adenocarcinoma_of_lung
+1	115256529	115256529	T	A	Likely pathogenic	Chronic_lym
+1	115256529	115256529	T	C	Pathogenic	Thyroid_cancer\x2c_follicular
+1	115256529	115256529	T	C	Pathogenic	Epidermal_nevus
+1	115256529	115256529	T	C	Pathogenic	Non-small_cell_lung_cancer
+1	115256529	115256529	T	C	Pathogenic	Giant_pigmented_hairy_nevus
+1	115256529	115256529	T	C	Pathogenic	Neurocutaneous_melanosis
+1	115256529	115256529	T	C	Pathogenic	Epidermal_nevus_syndrome
+1	115256529	115256529	T	C	Pathogenic	not_provided
+1	115256529	115256529	T	C	Likely pathogenic	Renal_cell_carcinoma
+1	115256529	115256529	T	C	Likely pathogenic	Chronic_lymphocytic_leukemia
+1	115256529	115256529	T	C	Likely pathogenic	Adrenocortical_carcinoma
+1	115256529	115256529	T	C	Likely pathogenic	Ovarian_Serous_C
+1	156848918	156848918	C	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+1	156848918	156848918	C	T	Pathogenic	Hereditary_insensitivity_to_pain_with_anhidrosis
+1	156848918	156848918	C	T	other	Hereditary_insensitivity_to_pain_with_anhidrosis
+1	156848946	156848946	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+1	156848946	156848946	G	T	Pathogenic	Hereditary_insensitivity_to_pain_with_anhidrosis
+1	156848946	156848946	G	T	other	Hereditary_insensitivity_to_pain_with_anhidrosis
+1	156848946	156848946	G	T	Benign	not_specified
+1	193091333	193091333	G	-	Pathogenic	Parathyroid_carcinoma
+1	193091342	193091359	GCTTAGCGTCCTGCGACA	-	Pathogenic	Parathyroid_carcinoma
+1	193091412	193091412	G	-	Pathogenic	Parathyroid_carcinoma
+1	193091458	193091458	G	A	Pathogenic	Parathyroid_carcinoma
+1	193094272	193094272	C	G	Pathogenic	Parathyroid_carcinoma
+1	193094348	193094348	G	C	Pathogenic	Parathyroid_carcinoma
+1	193099308	193099308	A	-	Pathogenic	Parathyroid_carcinoma
+1	193107241	193107242	AG	-	Pathogenic	Parathyroid_carcinoma
+1	193111145	193111145	-	AG	Pathogenic	Parathyroid_carcinoma
+1	193111145	193111145	-	AG	Pathogenic	not_provided
+1	193111146	193111146	-	AG	Pathogenic	Hyperparathyroidism_2
+1	193111146	193111146	-	AG	Pathogenic	Parathyroid_carcinoma
+1	193111146	193111146	-	AG	Pathogenic	Hyperparathyroidism_1
+1	193111197	193111197	G	T	Likely pathogenic	Parathyroid_carcinoma
+1	193117032	193117033	TG	-	Pathogenic	Parathyroid_carcinoma
+3	41266101	41266101	C	G	Likely pathogenic	Colorectal_Neoplasms
+3	41266101	41266101	C	G	Likely pathogenic	Adenocarcinoma_of_lung
+3	41266101	41266101	C	G	Likely pathogenic	Malignant_melanoma_of_skin
+3	41266101	41266101	C	G	Likely pathogenic	Medulloblastoma
+3	41266101	41266101	C	G	Likely pathogenic	Pancreatic_adenocarcinoma
+3	41266101	41266101	C	G	Likely pathogenic	Transitional_cell_carcinoma_of_the_bladder
+3	41266101	41266101	C	G	Likely pathogenic	Hepatocellular_carcinoma
+3	41266101	41266101	C	G	Likely pathogenic	Oesophageal_carcinoma
+3	41266101	41266101	C	G	Likely pathogenic	Adenocarcinoma_of_prostate
+3	41266101	41266101	C	G	Likely pathogenic	Parathyroid_gland_neoplas
+3	41266112	41266112	T	G	Likely pathogenic	Uterine_cervical_neoplasms
+3	41266112	41266112	T	G	Likely pathogenic	Adenocarcinoma_of_prostate
+3	41266112	41266112	T	G	Likely pathogenic	Hepatocellular_carcinoma
+3	41266112	41266112	T	G	Likely pathogenic	Transitional_cell_carcinoma_of_the_bladder
+3	41266112	41266112	T	G	Likely pathogenic	Adenocarcinoma_of_stomach
+3	41266112	41266112	T	G	Likely pathogenic	Medulloblastoma
+3	41266112	41266112	T	G	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+3	41266112	41266112	T	G	Likely pathogenic	Parathyroid_gland_neoplasm
+3	41266112	41266112	T	G	Likely pathogenic	Oesophageal_carcinoma
+3	41266112	41266112	T	G	Likely pathogenic	Adeno
+3	178917478	178917478	G	A	Pathogenic	Cowden_syndrome_5
+3	178917478	178917478	G	A	Likely pathogenic	Glioblastoma
+3	178917478	178917478	G	A	Likely pathogenic	Squamous_cell_carcinoma_of_the_head_and_neck
+3	178917478	178917478	G	A	Likely pathogenic	Neoplasm_of_the_breast
+3	178917478	178917478	G	A	Likely pathogenic	Adenocarcinoma_of_stomach
+3	178917478	178917478	G	A	Likely pathogenic	Squamous_cell_carcinoma_of_lung
+3	178917478	178917478	G	A	Likely pathogenic	Pancreatic_adenocarcinoma
+3	178917478	178917478	G	A	Likely pathogenic	Neoplasm_of_brain
+3	178917478	178917478	G	A	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+3	178917478	178917478	G	A	Likely pathogenic	Adenocarcinoma_of_prosta
+3	178952072	178952072	A	T	Likely pathogenic	Pancreatic_adenocarcinoma
+3	178952072	178952072	A	T	Likely pathogenic	Adenocarcinoma_of_stomach
+3	178952072	178952072	A	T	Likely pathogenic	Glioblastoma
+3	178952072	178952072	A	T	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+3	178952072	178952072	A	T	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+3	178952072	178952072	A	T	Likely pathogenic	Neoplasm_of_brain
+3	178952072	178952072	A	T	Likely pathogenic	Squamous_cell_carcinoma_of_the_head_and_neck
+3	178952072	178952072	A	T	Likely pathogenic	Neoplasm_of_the_breast
+3	178952072	178952072	A	T	Likely pathogenic	Colorectal_Neoplasms
+3	178952072	178952072	A	T	Likely pathogenic	Transitional_cel
+7	140453132	140453132	T	G	Likely pathogenic	Malignant_melanoma_of_skin
+7	140453132	140453132	T	G	Likely pathogenic	Chronic_lymphocytic_leukemia
+7	140453132	140453132	T	G	Likely pathogenic	Adenocarcinoma_of_prostate
+7	140453132	140453132	T	G	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+7	140453132	140453132	T	G	Likely pathogenic	Adenocarcinoma_of_stomach
+7	140453132	140453132	T	G	Likely pathogenic	Malignant_melanoma
+7	140453132	140453132	T	G	Likely pathogenic	Adenocarcinoma_of_lung
+7	140453132	140453132	T	G	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+7	140453133	140453133	T	G	Pathogenic	Rasopathy
+7	140453133	140453133	T	G	Likely pathogenic	Chronic_lymphocytic_leukemia
+7	140453133	140453133	T	G	Likely pathogenic	Adenocarcinoma_of_stomach
+7	140453133	140453133	T	G	Likely pathogenic	Adenocarcinoma_of_lung
+7	140453133	140453133	T	G	Likely pathogenic	Adenocarcinoma_of_prostate
+7	140453133	140453133	T	G	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+7	140453133	140453133	T	G	Likely pathogenic	Malignant_melanoma_of_skin
+7	140453133	140453133	T	G	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+7	140453134	140453134	T	C	Pathogenic	Carcinoma_of_colon
+7	140453134	140453134	T	C	Pathogenic	Thyroid_cancer\x2c_follicular
+7	140453134	140453134	T	C	Pathogenic	Non-small_cell_lung_cancer
+7	140453134	140453134	T	C	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+7	140453134	140453134	T	C	Likely pathogenic	Adenocarcinoma_of_stomach
+7	140453134	140453134	T	C	Likely pathogenic	Malignant_melanoma_of_skin
+7	140453134	140453134	T	C	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+7	140453134	140453134	T	C	Likely pathogenic	Adenocarcinoma_of_prostate
+7	140453134	140453134	T	C	Likely pathogenic	Adenocarcinoma_of_lung
+7	140453134	140453134	T	C	Likely pathogenic	Chronic_l
+7	140453136	140453136	A	T	Pathogenic	Carcinoma_of_colon
+7	140453136	140453136	A	T	Pathogenic	Papillary_thyroid_carcinoma
+7	140453136	140453136	A	T	Pathogenic	Astrocytoma\x2c_low-grade\x2c_somatic
+7	140453136	140453136	A	T	Pathogenic	Germ_cell_tumor\x2c_nonseminomatous
+7	140453136	140453136	A	T	Pathogenic	Non-small_cell_lung_cancer
+7	140453136	140453136	A	T	Pathogenic	Malignant_melanoma
+7	140453136	140453136	A	T	Pathogenic	not_provided
+7	140453136	140453136	A	T	Pathogenic	Cardio-facio-cutaneous_syndrome
+7	140453136	140453136	A	T	Likely pathogenic	Malignant_melanoma_of_skin
+7	140453136	140453136	A	T	Likely pathogenic	Colonic_Neoplasm
+10	43607617	43607617	-	AGGAGTGTG	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43607621	43607621	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43607621	43607621	G	T	Pathogenic	MEN2A_and_FMTC
+10	43607621	43607621	G	T	Pathogenic	not_provided
+10	43607621	43607621	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43609069	43609069	T	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609069	43609069	T	C	Pathogenic	MEN2A_and_FMTC
+10	43609069	43609069	T	C	Pathogenic	not_provided
+10	43609070	43609070	G	A	Pathogenic	MULTIPLE_ENDOCRINE_NEOPLASIA\x2c_TYPE_IIA\x2c_WITH_HIRSCHSPRUNG_DISEASE
+10	43609070	43609070	G	A	Pathogenic	MEN2A_and_FMTC
+10	43609070	43609070	G	A	Pathogenic	not_provided
+10	43609070	43609070	G	A	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43609070	43609070	G	A	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609070	43609070	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43609070	43609070	G	A	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609070	43609070	G	A	Likely pathogenic	Multip
+10	43609074	43609100	CTGCTTCCCTGAGGAGGAGAAGTGCTT	-	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609096	43609096	T	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609096	43609096	T	C	Pathogenic	MEN2A_and_FMTC
+10	43609096	43609096	T	C	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609096	43609096	T	C	Pathogenic	not_provided
+10	43609096	43609096	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609096	43609096	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43609096	43609096	T	C	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609096	43609096	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609097	43609097	G	A	Pathogenic	MEN2A_and_FMTC
+10	43609097	43609097	G	A	Pathogenic	Hereditary_cancer-predisposing_syndrome
+10	43609097	43609097	G	A	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609097	43609097	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43609097	43609097	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609097	43609097	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609097	43609097	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609097	43609097	G	A	Pathogenic	Multiple_e
+10	43609097	43609097	G	C	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609097	43609097	G	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609097	43609097	G	C	Pathogenic	MEN2A_and_FMTC
+10	43609097	43609097	G	C	Pathogenic	not_provided
+10	43609097	43609097	G	C	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43609103	43609103	G	A	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609103	43609103	G	A	Pathogenic	MEN2A_and_FMTC
+10	43609103	43609103	G	A	Pathogenic	not_provided
+10	43609103	43609103	G	A	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609103	43609103	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43609103	43609103	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609103	43609103	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609103	43609103	G	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609103	43609103	G	C	Pathogenic	MEN2A_and_FMTC
+10	43609103	43609103	G	C	Pathogenic	not_provided
+10	43609103	43609103	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609103	43609103	G	T	Pathogenic	MEN2A_and_FMTC
+10	43609103	43609103	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609103	43609103	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43609103	43609103	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609103	43609103	G	T	Pathogenic	not_provided
+10	43609936	43609936	T	C	Pathogenic	MEN2A_and_FMTC
+10	43609936	43609936	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609936	43609936	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609936	43609936	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43609936	43609936	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609936	43609936	T	C	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609940	43609940	A	G	Uncertain significance	MEN2_phenotype:_Unknown
+10	43609940	43609940	A	G	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609942	43609947	GAGCTG	-	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609948	43609948	T	C	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609948	43609948	T	C	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609948	43609948	T	C	Pathogenic	Pheochromocytoma
+10	43609948	43609948	T	C	Pathogenic	MEN2A_and_FMTC
+10	43609948	43609948	T	C	Pathogenic	not_provided
+10	43609948	43609948	T	C	Pathogenic	Hereditary_cancer-predisposing_syndrome
+10	43609948	43609948	T	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609948	43609948	T	C	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609948	43609948	T	C	Likely pathogenic	Multiple_endocrine_n
+10	43609949	43609949	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609949	43609949	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43609949	43609949	G	T	Pathogenic	Pheochromocytoma
+10	43609949	43609949	G	T	Pathogenic	MEN2A_and_FMTC
+10	43609949	43609949	G	T	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43609950	43609950	C	G	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43609950	43609950	C	G	Pathogenic	Pheochromocytoma
+10	43609950	43609950	C	G	Pathogenic	MEN2A_and_FMTC
+10	43609950	43609950	C	G	Pathogenic	not_provided
+10	43609950	43609950	C	G	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43609950	43609950	C	G	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43609950	43609950	C	G	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+10	43609950	43609950	C	G	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43609950	43609950	C	G	Likely pathogenic	Multiple_endocrine_neoplasia\x
+10	43613840	43613840	G	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43613840	43613840	G	C	Pathogenic	MEN2A_and_FMTC
+10	43613840	43613840	G	C	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43613840	43613840	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43613840	43613840	G	C	Likely pathogenic	Neoplasm
+10	43613840	43613840	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43613840	43613840	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43613840	43613840	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43613906	43613906	G	C	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43613906	43613906	G	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43613906	43613906	G	C	Pathogenic	MEN2A_and_FMTC
+10	43613906	43613906	G	C	Pathogenic	not_provided
+10	43613908	43613908	A	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43613908	43613908	A	T	other	Pheochromocytoma
+10	43613908	43613908	A	T	Pathogenic	MEN2A_and_FMTC
+10	43613908	43613908	A	T	Benign	not_provided
+10	43613908	43613908	A	T	Benign	Multiple_endocrine_neoplasia\x2c_type_2
+10	43613908	43613908	A	T	Likely benign	Hereditary_cancer-predisposing_syndrome
+10	43613908	43613908	A	T	Likely benign	Hirschsprung_disease
+10	43613908	43613908	A	T	Likely benign	not_specified
+10	43613908	43613908	A	T	Likely benign	Hirschsprung_Disease\x2c_Dominant
+10	43613908	43613908	A	T	Likely benign	Multiple_endocrine_neopl
+10	43614996	43614996	G	A	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43614996	43614996	G	A	Pathogenic	MEN2A_and_FMTC
+10	43614996	43614996	G	A	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43614996	43614996	G	A	Pathogenic	not_provided
+10	43614996	43614996	G	A	Pathogenic	Hereditary_cancer-predisposing_syndrome
+10	43614996	43614996	G	A	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43614996	43614996	G	A	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43614996	43614996	G	C	Pathogenic	MEN2_phenotype:_Unclassified
+10	43614996	43614996	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43614996	43614996	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43614996	43614996	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43614996	43614996	G	C	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43614996	43614996	G	C	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43614996	43614996	G	C	Pathogenic	not_provided
+10	43614996	43614996	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43614996	43614996	G	T	Pathogenic	MEN2A_and_FMTC
+10	43614996	43614996	G	T	Pathogenic	not_provided
+10	43614996	43614996	G	T	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43614996	43614996	G	T	Pathogenic	Multiple_endocrine_neoplasia
+10	43615568	43615569	GC	TT	other	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43615568	43615569	GC	TT	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43615568	43615569	GC	TT	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_1
+10	43615568	43615569	GC	TT	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43615568	43615569	GC	TT	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_4
+10	43615592	43615592	T	G	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43615592	43615592	T	G	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43615592	43615592	T	G	Pathogenic	MEN2A_and_FMTC
+10	43615592	43615592	T	G	Pathogenic	Multiple_endocrine_neoplasia_IIA
+10	43615592	43615592	T	G	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43615592	43615592	T	G	Pathogenic	not_provided
+10	43615592	43615592	T	G	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43615592	43615592	T	G	Likely pathogenic	Multiple_endocrine_neoplasia\x2c_ty
+10	43615612	43615623	AGATGTTTATGA	-	Likely pathogenic	Medullary_thyroid_carcinoma
+10	43617398	43617398	G	C	Pathogenic	Familial_medullary_thyroid_carcinoma
+10	43617398	43617398	G	C	Pathogenic	MEN2_phenotype:_Unclassified
+10	43617416	43617416	T	C	other	Multiple_endocrine_neoplasia\x2c_type_2b
+10	43617416	43617416	T	C	Pathogenic	Thyroid_carcinoma\x2c_sporadic_medullary
+10	43617416	43617416	T	C	Pathogenic	Pheochromocytoma
+10	43617416	43617416	T	C	Pathogenic	not_provided
+10	43617416	43617416	T	C	Pathogenic	Multiple_endocrine_neoplasia\x2c_type_2
+10	43617416	43617416	T	C	other	Multiple_endocrine_neoplasia\x2c_type_2a
+10	43617416	43617416	T	C	Pathogenic	Constipation
+10	43617416	43617416	T	C	Pathogenic	Gingival_overgrowth
+10	43617416	43617416	T	C	Pathogenic	Hypertelorism
+10	43617416	43617416	T	C	Pathogenic	Hypothyroidism
+10	43617416	43617416	T	C	Pathogenic	
+11	533873	533873	C	A	Likely pathogenic	Neoplasm
+11	533873	533873	C	A	Likely pathogenic	Transitional_cell_carcinoma_of_the_bladder
+11	533873	533873	C	A	Likely pathogenic	Neoplasm_of_the_breast
+11	533873	533873	C	A	Likely pathogenic	Malignant_melanoma_of_skin
+11	533873	533873	C	A	Likely pathogenic	Squamous_cell_carcinoma_of_the_head_and_neck
+11	533873	533873	C	A	Likely pathogenic	Adenocarcinoma_of_prostate
+11	533873	533873	C	A	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+11	533873	533873	C	A	Likely pathogenic	Adenocarcinoma_of_lung
+11	533873	533873	C	A	Likely pathogenic	Squamous_cell_carcinoma_of_l
+11	533874	533874	T	G	Likely pathogenic	Transitional_cell_carcinoma_of_the_bladder
+11	533874	533874	T	G	Likely pathogenic	Pancreatic_adenocarcinoma
+11	533874	533874	T	G	Likely pathogenic	Multiple_myeloma
+11	533874	533874	T	G	Likely pathogenic	Chronic_lymphocytic_leukemia
+11	533874	533874	T	G	Likely pathogenic	Colorectal_Neoplasms
+11	533874	533874	T	G	Likely pathogenic	Neoplasm
+11	533874	533874	T	G	Likely pathogenic	Acute_myeloid_leukemia
+11	533874	533874	T	G	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+11	533874	533874	T	G	Likely pathogenic	Malignant_melanoma_of_skin
+11	533874	533874	T	G	Likely pathogenic	Neoplasm_of_the_thyroid
+11	533875	533875	G	C	Likely pathogenic	Chronic_lymphocytic_leukemia
+11	533875	533875	G	C	Likely pathogenic	Malignant_melanoma_of_skin
+11	533875	533875	G	C	Likely pathogenic	Pancreatic_adenocarcinoma
+11	533875	533875	G	C	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+11	533875	533875	G	C	Likely pathogenic	Hepatocellular_carcinoma
+11	533875	533875	G	C	Likely pathogenic	Adenocarcinoma_of_stomach
+11	533875	533875	G	C	Likely pathogenic	Squamous_cell_carcinoma_of_lung
+11	533875	533875	G	C	Likely pathogenic	Transitional_cell_carcinoma_of_the_bladder
+11	533875	533875	G	C	Likely pathogenic	Acute_myeloid_leu
+11	534286	534286	C	A	Pathogenic	Costello_syndrome
+11	534286	534286	C	A	Pathogenic	Rasopathy
+11	534286	534286	C	A	Pathogenic	not_provided
+11	534286	534286	C	A	Likely pathogenic	Multiple_myeloma
+11	534286	534286	C	A	Likely pathogenic	Adenocarcinoma_of_lung
+11	534286	534286	C	A	Likely pathogenic	Squamous_cell_carcinoma_of_the_head_and_neck
+11	534286	534286	C	A	Likely pathogenic	Neoplasm_of_the_breast
+11	534286	534286	C	A	Likely pathogenic	Pancreatic_adenocarcinoma
+11	534286	534286	C	A	Likely pathogenic	Malignant_melanoma_of_skin
+11	534286	534286	C	A	Pathogenic	Neoplasm_of_the_thyroid_gland
+11	534286	534286	C	A	Likely pathogenic	Squamous_cell_carcinoma
+11	534286	534286	C	G	Pathogenic	Nevus_sebaceous
+11	534286	534286	C	G	Pathogenic	Epidermal_nevus_syndrome
+11	534286	534286	C	G	Pathogenic	Epidermal_nevus
+11	534286	534286	C	G	Pathogenic	NEVUS_SPILUS\x2c_SOMATIC
+11	534286	534286	C	G	Pathogenic	SPITZ_NEVUS\x2c_SOMATIC
+11	534286	534286	C	G	Pathogenic	Neoplasm_of_the_thyroid_gland
+11	534286	534286	C	G	Likely pathogenic	Squamous_cell_carcinoma_of_lung
+11	534286	534286	C	G	Likely pathogenic	Chronic_lymphocytic_leukemia
+11	534286	534286	C	G	Likely pathogenic	Colorectal_Neoplasms
+11	534286	534286	C	G	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+11	534286	534286	C	G	Likely pathogenic	
+12	25380275	25380275	T	A	Pathogenic	Non-small_cell_lung_cancer
+12	25380275	25380275	T	A	Pathogenic	Colorectal_Neoplasms
+12	25380275	25380275	T	A	Likely pathogenic	Adenocarcinoma_of_lung
+12	25380275	25380275	T	A	Likely pathogenic	Malignant_melanoma_of_skin
+12	25380275	25380275	T	A	Likely pathogenic	Squamous_cell_carcinoma_of_lung
+12	25380275	25380275	T	A	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+12	25380275	25380275	T	A	Likely pathogenic	Multiple_myeloma
+12	25380275	25380275	T	A	Likely pathogenic	Malignant_neoplasm_of_body_of_uterus
+12	25380275	25380275	T	A	Likely pathogenic	Chronic_lymphocytic_leukemia
+12	25380275	25380275	T	A	Likely pathogenic	Hepatocellul
+12	25380276	25380276	T	A	Pathogenic	Non-small_cell_lung_cancer
+12	25380276	25380276	T	A	Likely pathogenic	Medullary_thyroid_carcinoma
+12	25380276	25380276	T	A	Pathogenic	Neoplasm_of_the_thyroid_gland
+12	25380276	25380276	T	A	Pathogenic	Colorectal_Neoplasms
+12	25398281	25398281	C	T	Pathogenic	Breast_adenocarcinoma
+12	25398281	25398281	C	T	Pathogenic	Non-small_cell_lung_cancer
+12	25398281	25398281	C	T	Pathogenic	Juvenile_myelomonocytic_leukemia
+12	25398281	25398281	C	T	Pathogenic	RAS-associated_autoimmune_leukoproliferative_disorder
+12	25398281	25398281	C	T	Pathogenic	Colorectal_Neoplasms
+12	25398281	25398281	C	T	Pathogenic	Neoplasm_of_the_thyroid_gland
+12	25398281	25398281	C	T	Likely pathogenic	Acute_myeloid_leukemia
+12	25398281	25398281	C	T	Pathogenic	Ovarian_Neoplasms
+12	25398284	25398284	C	A	Pathogenic	Carcinoma_of_pancreas
+12	25398284	25398284	C	A	Pathogenic	Nevus_sebaceous
+12	25398284	25398284	C	A	Pathogenic	Juvenile_myelomonocytic_leukemia
+12	25398284	25398284	C	A	other	Non-small_cell_lung_cancer
+12	25398284	25398284	C	A	Pathogenic	not_provided
+12	25398284	25398284	C	A	Pathogenic	Neoplasm_of_the_thyroid_gland
+12	25398284	25398284	C	A	Pathogenic	Ovarian_Neoplasms
+12	25398284	25398284	C	A	Pathogenic	Colorectal_Neoplasms
+12	25398284	25398284	C	A	Likely pathogenic	Acute_myeloid_leukemia
+12	25398285	25398285	C	A	Pathogenic	Lung_cancer
+12	25398285	25398285	C	A	Pathogenic	Non-small_cell_lung_cancer
+12	25398285	25398285	C	A	not provided	Endometrial_carcinoma
+12	25398285	25398285	C	A	Pathogenic	Neoplasm_of_the_thyroid_gland
+12	25398285	25398285	C	A	Pathogenic	Ovarian_Neoplasms
+12	25398285	25398285	C	A	Likely pathogenic	Adenocarcinoma_of_lung
+12	25398285	25398285	C	A	Pathogenic	Colorectal_Neoplasms
+12	25398285	25398285	C	G	Pathogenic	Squamous_cell_carcinoma_of_lung
+12	25398285	25398285	C	G	Pathogenic	Malignant_tumor_of_urinary_bladder
+12	25398285	25398285	C	G	Pathogenic	Non-small_cell_lung_cancer
+12	25398285	25398285	C	G	Pathogenic	Neoplasm_of_the_thyroid_gland
+12	25398285	25398285	C	G	Pathogenic	Ovarian_Neoplasms
+12	25398285	25398285	C	G	Pathogenic	Colorectal_Neoplasms
+14	81610299	81610299	G	C	Pathogenic	THYROID_CARCINOMA_WITH_THYROTOXICOSIS\x2c_SOMATIC
+14	105246551	105246551	C	T	Pathogenic	Breast_adenocarcinoma
+14	105246551	105246551	C	T	Pathogenic	Carcinoma_of_colon
+14	105246551	105246551	C	T	Pathogenic	Neoplasm_of_ovary
+14	105246551	105246551	C	T	Pathogenic	Proteus_syndrome
+14	105246551	105246551	C	T	Likely pathogenic	Adenocarcinoma_of_prostate
+14	105246551	105246551	C	T	Likely pathogenic	Neoplasm_of_the_thyroid_gland
+14	105246551	105246551	C	T	Likely pathogenic	Osteosarcoma
+14	105246551	105246551	C	T	Likely pathogenic	Small_cell_lung_cancer
+14	105246551	105246551	C	T	Likely pathogenic	Malignant_melanoma_of_skin
+14	105246551	105246551	C	T	Likely pathogenic	Adenocarcinoma_of_stomach
+14	105246551	105246551	C	T	Pathogenic	Colorectal_Neoplasms
+14	105246551	105246551	C	T	Pathogenic	Neoplasm_of_
+17	7577120	7577120	C	T	Pathogenic	Li-Fraumeni_syndrome_1
+17	7577120	7577120	C	T	Pathogenic	Thyroid_cancer\x2c_anaplastic
+17	7577120	7577120	C	T	Pathogenic	Hereditary_cancer-predisposing_syndrome
+17	7577120	7577120	C	T	Pathogenic	not_provided
+17	7577120	7577120	C	T	Likely pathogenic	Squamous_cell_carcinoma_of_lung
+17	7577120	7577120	C	T	Likely pathogenic	Adenocarcinoma_of_stomach
+17	7577120	7577120	C	T	Likely pathogenic	Squamous_cell_carcinoma_of_the_head_and_neck
+17	7577120	7577120	C	T	Likely pathogenic	Adenocarcinoma_of_prostate
+17	7577120	7577120	C	T	Likely pathogenic	Uterine_Carcinosarc
+19	19627062	19627062	G	C	Pathogenic	Hurthle_cell_carcinoma_of_thyroid
