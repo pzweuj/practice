@@ -1,22 +1,22 @@
 # pzw
 # 20180309
 
-a = open('clinvar.txt', 'r')
-b = open('results.txt', 'w')
+clinvar = open('clinvar.txt', 'r')
+clinvarSplit = open('clinvarSplit.txt', 'w')
 
-for i in a:
+for i in clinvar:
 	if i.startswith('#'):
 		continue
 	else:
-		c = i.split('\n')[0]
-		lineAS = c.split('\t')
-		chr = lineAS[0]
-		start = lineAS[1]
-		end = lineAS[2]
-		ref = lineAS[3]
-		alt = lineAS[4]
-		clinsig = lineAS[5]
-		clindbn = lineAS[6]
+		iSplitN = i.split('\n')[0]
+		line = iSplitN.split('\t')
+		chr = line[0]
+		start = line[1]
+		end = line[2]
+		ref = line[3]
+		alt = line[4]
+		clinsig = line[5]
+		clindbn = line[6]
 
 	clinsigList = clinsig.split('|')
 	clindbnList = clindbn.split('|')
@@ -37,7 +37,7 @@ for i in a:
 		l.append(clsig)
 		l.append(cldbn)
 
-		b.write('\t'.join(l) + '\n')
+		clinvarSplit.write('\t'.join(l) + '\n')
 	
-b.close()
-a.close()
+clinvarSplit.close()
+clinvar.close()
