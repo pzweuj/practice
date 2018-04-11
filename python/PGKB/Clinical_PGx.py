@@ -1,67 +1,74 @@
-# -*- coding:utf-8 -*-
+# pzw
+# 20180403
 from bs4 import BeautifulSoup
 
-inputFile = open('pagecontent-all.txt', 'r')
-outputFile = open('html.txt', 'w')
+pgkb = open('pagecontent-all.txt', 'r')
+out = open('results.txt', 'w')
 
-for line in inputFile:
-    contents = line.split('\t')
-    clinical_PGx = contents[1]
-    soup = BeautifulSoup(clinical_PGx, 'lxml')
+out.write('Vatiant	Level	Type	Gene	Phenotypes	OMB_Race	Race_Notes	Genetypes	Sen' + '\n')
 
-    for i in range(len(soup.select('.yui-gf'))):
-        temp = soup.select('.yui-gf')[i]
-        dd = temp.select('dd')
-        dt = temp.select('dt')
-        d = {'Level': '-', 'Types': '-', 'Variant': '-', 'Genes': '-', 'Phenotypes': '-', 'OMB_Race': '-','Race_Notes': '-'}
-        zipped = zip(dt, dd)
-        Level_of_Evidence = zipped[0][1].string
-        d['Level'] = Level_of_Evidence
-        for j in range(len(zipped)):
-            if j == 0:
-                continue
-            stan = zipped[j][0].em.string
+for line in pgkb:
+	contents = line.split('\t')
+	clinical_PGx = contents[1]
+	soup = BeautifulSoup(clinical_PGx, 'lxml')
+	info = soup.select('.yui-gf')
+	
+	for i in info:
+		dd = i.select('dd')
+		dt = i.select('dt')
+		zipped = zip(dt, dd)
+		d = {
+			'Level': '-',
+			'Types': '-', 
+			'Variant': '-', 
+			'Genes': '-', 
+			'Phenotypes': '-', 
+			'OMB_Race': '-',
+			'Race_Notes': '-', 
+			'genetype': '-', 
+			'sen': '-'
+		}
+		Level_of_evidence = zipped[0][1].string
+		d['Level'] = Level_of_evidence
+		
+		for j in zipped:
+			if j[0].string == 'Type':
+				d['Types'] = j[1].string
+			elif j[0].string == 'Variant':
+				d['Variant'] = j[1].a.string
+			elif j[0].string == 'Genes':
+				d['Genes'] = j[1].a.string
+			elif j[0].string == 'Phenotypes':
+				d['Phenotypes'] = j[1].a.string
+			elif j[0].string == 'OMB Race':
+				d['OMB_Race'] = j[1].string.strip()
+			elif j[0].string == 'Race Notes':
+				d['Race_Notes'] = j[1].string.strip()
+			else:
+				continue
 
-            if stan == 'Type':
-                d['Types'] = zipped[j][1].string
-            elif stan == 'Variant':
-                variants = zipped[j][1].select('a')
-                m = []
-                for n in range(len(variants)):
-                    vars = variants[n].string
-                    m.append(vars)
-                d['Variant'] = ','.join(m)
-            elif stan == 'Genes':
-                d['Genes'] = zipped[j][1].a.string
-            elif stan == 'OMB Race':
-                d['OMB_Race'] = zipped[j][1].string.strip()
-            elif stan == 'Race Notes':
-                d['Race_Notes'] = zipped[j][1].string.strip()
-            elif stan == 'Phenotypes':
-                d['Phenotypes'] = zipped[j][1].a.string
-            else:
-                continue
 
-            for k in range(len(temp.select('span'))):
-                l = []
-                if k == 0:
-                    continue
-                else:
-                    genetype = temp.select('span')[k].string.strip()
-                    sen = temp.select('td')[k - 1].string
+		span = i.select('span')
+		del span[0]
+		td = i.select('td')
+		span_td = zip(span, td)
+		for k in span_td:
+			d['genetype'] = k[0].string.strip()
+			d['sen'] = k[1].string
 
-                l.append(d['Variant'])
-                l.append(d['Level'])
-                l.append(d['Types'])
-                l.append(d['Genes'])
-                l.append(d['Phenotypes'])
-                l.append(d['OMB_Race'])
-                l.append(d['Race_Notes'])
-                l.append(genetype)
-                l.append(sen)
+			l = [
+				d['Variant'], 
+				d['Level'], 
+				d['Types'], 
+				d['Genes'], 
+				d['Phenotypes'], 
+				d['OMB_Race'], 
+				d['Race_Notes'], 
+				d['genetype'], 
+				d['sen']
+			]
 
-                outputFile.write(('\t'.join(l) + '\n').encode('utf-8'))
+			output = ('\t'.join(l) + '\n').encode('utf8')
+			out.write(output)
 
-inputFile.close()
-outputFile.close()
-print 'task done'
+
