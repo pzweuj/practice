@@ -1,0 +1,1 @@
+perl makeAnnovarIndex.pl hg19_clinvar_20180225.txt 1000
