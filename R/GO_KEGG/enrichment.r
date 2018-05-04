@@ -36,15 +36,9 @@ CC <- enrichGO(transID$ENTREZID,
 )
 CC <- setReadable(CC, OrgDb=org.Hs.eg.db)
 
-svg(file="./GO/GO_CC_Dotplot.svg", bg="transparent")
+pdf(file="./GO/GO_CC.pdf", bg="transparent")
 dotplot(CC, showCategory=12, colorBy="pvalue", font.size=8, title="GO_CC") # + theme(axis.text.y = element_text(angle = 45))
-dev.off()
-
-svg(file="./GO/GO_CC_Barplot.svg", bg="transparent")
 barplot(CC, showCategory=12, title="GO_CC", font.size=8)
-dev.off()
-
-svg(file="./GO/GO_CC_Network.svg", bg="transparent")
 plotGOgraph(CC)
 dev.off()
 
@@ -54,15 +48,9 @@ write.table(as.data.frame(CC@result), file="./GO/GO_CC.xls", sep="\t", row.names
 MF <- enrichGO(transID$ENTREZID, "org.Hs.eg.db", keyType="ENTREZID", ont="MF", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.1)
 MF <- setReadable(MF, OrgDb=org.Hs.eg.db)
 
-svg(file="./GO/GO_MF_Dotplot.svg", bg="transparent")
+pdf(file="./GO/GO_MF.pdf", bg="transparent")
 dotplot(MF, showCategory=12, colorBy="pvalue", font.size=8, title="GO_MF") # + theme(axis.text.y = element_text(angle = 45))
-dev.off()
-
-svg(file="./GO/GO_MF_Barplot.svg", bg="transparent")
 barplot(MF, showCategory=12, title="GO_MF", font.size=8)
-dev.off()
-
-svg(file="./GO/GO_MF_Network.svg", bg="transparent")
 plotGOgraph(MF)
 dev.off()
 
@@ -72,15 +60,9 @@ write.table(as.data.frame(MF@result), file="./GO/GO_MF.xls", sep="\t", row.names
 BP <- enrichGO(transID$ENTREZID, "org.Hs.eg.db", keyType="ENTREZID", ont="BP", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.1)
 BP <- setReadable(BP, OrgDb=org.Hs.eg.db)
 
-svg(file="./GO/GO_BP_Dotplot.svg", bg="transparent")
+pdf(file="./GO/GO_BP.pdf", bg="transparent")
 dotplot(BP, showCategory=12, colorBy="pvalue", font.size=8, title="GO_BP") # + theme(axis.text.y = element_text(angle = 45))
-dev.off()
-
-svg(file="./GO/GO_BP_Barplot.svg", bg="transparent")
 barplot(BP, showCategory=12, title="GO_BP", font.size=8)
-dev.off()
-
-svg(file="./GO/GO_BP_Network.svg", bg="transparent")
 plotGOgraph(BP)
 dev.off()
 
@@ -90,11 +72,8 @@ write.table(as.data.frame(BP@result), file="./GO/GO_BP.xls", sep="\t", row.names
 kegg <- enrichKEGG(transID$ENTREZID, organism="hsa", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.1)
 kegg <- setReadable(kegg, OrgDb=org.Hs.eg.db, keytype="ENTREZID")
 
-svg(file="./KEGG/KEGG_Dotplot.svg", bg="transparent")
+pdf(file="./KEGG/KEGG.pdf", bg="transparent")
 dotplot(kegg, showCategory=12, colorBy="pvalue", font.size=8, title="KEGG") # + theme(axis.text.y = element_text(angle = 45))
-dev.off()
-
-svg(file="./KEGG/KEGG_Barplot.svg", bg="transparent")
 barplot(kegg, showCategory=12, title="KEGG", font.size=8)
 dev.off()
 
