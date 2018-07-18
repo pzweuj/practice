@@ -65,27 +65,3 @@ nt <- normTransform(dds)
 log2.norm.counts <- assay(nt)[select,]
 df <- as.data.frame(colData(dds)[, c("name", "condition")])
 pheatmap(log2.norm.counts, cluster_rows=T, show_rownames=F, cluster_cols=T, annotation_col=df, fontsize=6)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
