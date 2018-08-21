@@ -8,7 +8,7 @@ def pmid2ref(pmid):
 	import requests
 	from bs4 import BeautifulSoup
 	html = requests.get('https://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid) + '/')
-	soup = BeautifulSoup(html.text, 'lxml')
+	soup = BeautifulSoup(html.text)
 	title = soup.title.string.split('- PubMed')[0]
 	info = soup.select('meta')
 	for meta in info:
