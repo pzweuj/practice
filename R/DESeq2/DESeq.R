@@ -19,7 +19,7 @@ dds <- DESeq(dds)
 res <- results(dds)
 write.csv(res, "res_output.csv")
 resdata <- merge(as.data.frame(res), as.data.frame(counts(dds, normalized=TRUE)),by="row.names",sort=FALSE)
-write.csv(resdata,file = "all_output.csv",row.names = F)
+write.csv(resdata, file="all_output.csv", row.names=F)
 
 # PCA
 rld <- rlog(dds)
