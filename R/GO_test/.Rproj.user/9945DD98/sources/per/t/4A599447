@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1535612780498.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "498810767",
+    "id" : "4A599447",
+    "lastKnownWriteTime" : 1535638805,
+    "last_content_update" : 1535638805215,
+    "path" : "D:/practice/R/GO_test/Enrichment_bar_plot2.R",
+    "project_path" : "Enrichment_bar_plot2.R",
+    "properties" : {
+        "cursorPosition" : "68,17",
+        "scrollLine" : "61",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
