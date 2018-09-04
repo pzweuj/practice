@@ -70,10 +70,16 @@ for(i in c(1,2,3,4,5)){
 }
 
 GO_df <- rbind(CC_top5, MF_top5, BP_top5)
+GO_df$padj <- 0 - GO_df$p.adjust
 
-p <- ggplot(GO_df, aes(x=GO_df$Description, y=GO_df$BgRatio, fill=GO_df$p.adjust)) + geom_bar(stat="identity") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5)) +
+p <- ggplot(GO_df, aes(x=GO_df$Description, y=GO_df$GeneRatio, fill=GO_df$padj)) + geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   ylab("sample number/background number") +
   xlab("pathway name") +
   labs(fill="p.adjust") +
-  scale_fill_gradient(low="#C1FFC1", high="#228B22")
+  scale_fill_gradient(low="#C1FFC1",
+                      high="#228B22",
+                      labels=c("3e-11", "3e-12", "3e-13", "3e-14", "0"),
+                      breaks=c(-3e-11, -3e-12, -3e-13, -3e-14, 0),
+                      limits=c(-3e-11, 0)
+                      )
