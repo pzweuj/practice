@@ -79,7 +79,7 @@ p <- ggplot(GO_df, aes(x=GO_df$Description, y=GO_df$GeneRatio, fill=GO_df$padj))
   labs(fill="p.adjust") +
   scale_fill_gradient(low="#C1FFC1",
                       high="#228B22",
-                      labels=c("3e-11", "3e-12", "3e-13", "3e-14", "0"),
-                      breaks=c(-3e-11, -3e-12, -3e-13, -3e-14, 0),
-                      limits=c(-3e-11, 0)
+                      labels=c("0.01", "0"),
+                      breaks=c(-0.01, 0),
+                      limits=c(-0.01, 0)
                       )
