@@ -1,4 +1,4 @@
-# 20181014
+# 20181015
 
 brain12 <- read.table("Allen_BrainAtlas_12regions_Microarray.txt", header=TRUE)
 
@@ -18,6 +18,7 @@ col <- c("red",
          "coral")
 
 # 应该可以利用随机函数还有colors()函数来随机生成12种颜色，更方便
+# 也可以直接输出colors()前12项
 
 # 设定输出目标
 pdf("Histograms.pdf", width=8.27, height=11.69)
@@ -45,7 +46,7 @@ library(ggfortify)
 brain12 <- t(brain12)
 brain12 <- as.data.frame(brain12)
 brain12$region <- rownames(brain12)
-brain12[is.na(brain12)] <- 0
+brain12[is.na(brain12)] <- 2
 
 # 计算pca
 brain12.data <- brain12[c(1:2817)]
