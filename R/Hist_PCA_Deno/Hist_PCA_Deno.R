@@ -46,7 +46,7 @@ library(ggfortify)
 brain12 <- t(brain12)
 brain12 <- as.data.frame(brain12)
 brain12$region <- rownames(brain12)
-brain12[is.na(brain12)] <- 2
+# brain12[is.na(brain12)] <- 2
 
 # 计算pca
 brain12.data <- brain12[c(1:2817)]
