@@ -1,0 +1,7 @@
+seq:
+tagctagcctacgacatatatagctagctagcTAGACTAGtagatagctagctagcatcgatcgCGATCGTATAGCTAGCtagctagctagctagcTAGCTAGgTAGCTAGCTCGATCGATAGCTAGCatgctagc
+#Exon	start	end
+exon1	59595923	59595930
+exon2	59595955	59595970
+exon3	59595987	59595993
+exon4	59595995	59596018

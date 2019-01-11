@@ -1,0 +1,8 @@
+test reverse
+
+
+cgatcgta	CGATCGAT	AGCTAGCT	CGATCGAT	59595995
+gGATCGAT	cgatcgat	cgatcgat	CGATCGAT	59595963
+ATGCTAGC	gctagcta	cgatcgat	cgatagat	59595931
+GATCAGAT	cgatcgat	cgatatat	acagcatc	59595899
+cgatcgat
