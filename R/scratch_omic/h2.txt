@@ -1,0 +1,12 @@
+Data preprocessing
+Data processing
+Quantification
+Data analysis
+Expression
+Data visualization
+Classification/Clustering
+Network analysis
+Integrative analysis
+File manipulation
+Utilities
+Unclassified tools

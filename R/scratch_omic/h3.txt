@@ -1,0 +1,69 @@
+Noise reduction
+Quality control
+UMI processing
+Experimental design
+Base calling
+Read quality control
+Error correction
+Adapter trimming
+k-mer counting
+Depth of coverage
+Read clustering
+Doublet detection
+Normalization
+Batch effect removal
+Read alignment
+Gene filtering
+Duplicate read removal
+Spliced read alignment
+Alignment evaluation
+Transcript quantification
+Read count
+Cell lineage and pseudotime inference
+Dimensionality reduction
+Alternative splicing detection
+Allele-specific expression
+Expression pattern detection
+Single-cell imputation
+Marker gene detection
+Modality prediction
+Transformation
+Variable gene detection
+Variant detection
+Cell cycle
+Gene set prediction
+Haplotype prediction
+Immune prediction
+Rare cell prediction
+Stem cell prediction
+Differential expression detection
+Differential expression
+Data visualization
+Alternative splicing visualization
+Gene expression visualization
+Transcriptome visualization
+Genome visualization
+Read alignment visualization
+Heatmap generation
+Venn diagram creation
+Sub-population detection
+Classification
+Clustering
+Gene network prediction
+scRNA-seq data integration
+File merging
+File filtering
+File format conversion
+File comparison
+File sorting
+File intersection
+File indexation
+File parsing-extraction
+File sampling
+File editing
+File splitting
+File compression
+Variant aggregation/summarization
+Read count simulation
+Libraries/Frameworks
+Unclassified tools
