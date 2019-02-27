@@ -15,6 +15,8 @@ def getSeqLine(x, y=10):
 
 plasmidFasta.write(">" + plasmidName + "\n")
 for line in plasmidOrigin:
+	if line == "":
+		continue
 	seqs = getSeqLine(line)
 	plasmidFasta.write(seqs)
 

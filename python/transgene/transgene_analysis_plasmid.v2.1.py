@@ -1,8 +1,10 @@
 # encoding:utf-8
 # pzw
-# 20190218
+# 20190225
 #####
 # update log
+# v2.1 方法调整
+# v2.0 方法调整
 # v1.6 更新统计方法，提升性能
 # v1.5 使用内置函数
 # v1.4 增加连接位点之间有两边均比对不上的碱基的过滤阈值，人为规定为10，目前未作为可选参数
@@ -29,20 +31,20 @@ maxGap = 10
 #################################
 
 ##########  test  ###############
-# bamFile = bamnostic.AlignmentFile("H04728D.CED1108.bam", "rb")
+# bamFile = bamnostic.AlignmentFile("H04730D.CED1484.final.bam", "rb")
 # results = open("results.txt", "w")
-# basesCover = 30
+# basesCover = 46
 # showBases = 10
 # maxGap = 10
 #################################
 
 ## 提示信息
-print "bases Cover set: " + str(basesCover)
+print("bases Cover set: " + str(basesCover))
 if showBases == 0:
-	print "show all bases"
+	print("show all bases")
 else:
-	print "show " + str(showBases) + " bases"
-print "-----------------------------------"
+	print("show " + str(showBases) + " bases")
+print("-----------------------------------")
 start = time.clock()
 
 ## 读取头信息
@@ -56,44 +58,58 @@ readCount = set()
 readName_count = 0
 
 for read in bamFile:
-
 	## 预处理
-	readSplit = str(read).split("\t")
-	hostChr = readSplit[2]
 	readName = read.read_name
+	mateName = read.next_reference_name
 	cigar = read.cigarstring
-	hostCigarSplit = re.findall(r"[0-9]+|[a-z]+", cigar)
-	tagSA = read.get_tag("SA").split(",")
-	insertCigarSplit = re.findall(r"[0-9]+|[a-z]+", tagSA[3])
-
+	insertCigarNum = re.findall(r"[0-9]+|[a-z]+", cigar)
 	readCount.add(read.read_name)
+	if str(read).__contains__("SA:Z"):
+		chimera = "positive"
+	else:
+		chimera = "negative"
 
-	## 过滤以质粒为主要比对的reads
-	if hostChr == plasmidName:
-		print "remove read: " + readName + " of " + plasmidName
-		continue
-
-	## 过滤比对位置多于2的reads
-	if len(hostCigarSplit) > 2:
+	## 过滤比对到多个位置的reads
+	if len(insertCigarNum) > 2:
 		print "remove read " + readName +": map to more than 2 locations"
 		continue
-	if len(insertCigarSplit) > 2:
-		print "remove read " + readName +": map to more than 2 locations"
+
+	## 分析
+	if mateName == plasmidName:
+		if chimera == "positive":
+			tagSASplit = read.get_tag("SA").split(",")
+			hostChr = tagSASplit[0]
+			hostPos_tmp = tagSASplit[1]
+			hostCigar = tagSASplit[3]
+			hostCigarNum = re.findall(r"[0-9]+|[a-z]+", hostCigar)
+
+			## 过滤嵌合部分比对到质粒的reads
+			if hostChr == plasmidName:
+				print("remove read " + readName +": both map to plasmid")
+				continue
+		else:
+			continue	
+	else:
+		continue
+
+	## 过滤比对到多个位置的reads
+	if len(hostCigarNum) > 2:
+		print("remove read " + readName +": map to more than 2 locations")
 		continue
 
 	## 宿主序列的合成方式
-	hostCigarDirect = cigar.split("M")
+	hostCigarDirect = hostCigar.split("M")
 	if hostCigarDirect[1] == "":
 		hostMapAt = "right"
-		hostSoft = hostCigarDirect[0].split("S")[0]
-		hostMap = hostCigarDirect[0].split("S")[1]
+		hostSoft = hostCigar.split("S")[0]
+		hostMap = hostCigar.split("S")[1].split("M")[0]
 	else:
 		hostMapAt = "left"
 		hostSoft = hostCigarDirect[1].split("S")[0]
 		hostMap = hostCigarDirect[0]
 
 	## 质粒序列的合成方式
-	insertCigarDirect = tagSA[3].split("M")
+	insertCigarDirect = cigar.split("M")
 	if insertCigarDirect[1] == "":
 		insertMapAt = "right"
 		insertSoft = insertCigarDirect[0].split("S")[0]
@@ -105,61 +121,50 @@ for read in bamFile:
 
 	## 过滤宿主序列与质粒序列属于包含关系的reads
 	if hostMapAt == insertMapAt:
-		print "remove read " + readName + ": filter by inclusion"
+		print("remove read " + readName + ": filter by inclusion")
 		continue
 
 	## 过滤覆盖区域未达设定碱基数的reads
 	if int(hostMap) < 20 or int(insertMap) < basesCover:
-		print "remove read " + readName + ": filter by basesCover"
-		continue
-
-	## 过滤输出bam文件时错误输出的reads
-	if tagSA[0] != plasmidName:
-		print "remove read " + readName + ": wrong output"
+		print("remove read " + readName + ": filter by basesCover")
 		continue
 
 	## 过滤掉中间间隔太大的reads
 	if (int(insertMap) + maxGap) < int(hostSoft):
-		print "remove read " + readName + ": gap too large"
+		print("remove read " + readName + ": gap too large")
 		continue
 
 	## 解析过滤后的reads
 	else:
-		print "analyse " + readName
+		print("analyse " + readName)
 		readName_count += 1
 		seq = read.query_sequence
-		hostSeq = read.query_alignment_sequence
+		insertSeq = read.query_alignment_sequence
 
 		## 利用flag值判断正负链
-		if read.is_reverse:
-			hostStrand = "-"
-		else:
-			hostStrand = "+"
+		# if read.is_reverse:
+		# 	insertStrand = "-"
+		# else:
+		# 	insertStrand = "+"
 
-		## 获得嵌合部分的位置与方向
-		insertPos_tmp = tagSA[1]
-		insertStrand = tagSA[2]
-
-		if hostMapAt == "left":
-			insertSeq = seq[-int(insertMap):]
-			interType = hostChr + "/" + plasmidName
-			interStrand = hostStrand + "/" + insertStrand
-			hostPos = read.query_alignment_start + read.query_alignment_length
-			insertPos = int(insertPos_tmp)
-			if showBases == 0:
-				junctionSeq = hostSeq + "@" + insertSeq.lower()
-			else:
-				junctionSeq = hostSeq[-showBases:] + "@" + insertSeq[0:showBases].lower()
-		else:
-			insertSeq = seq[0:int(insertMap)]
+		if insertMapAt == "left":
+			hostSeq = seq[-int(hostMap):]
 			interType = plasmidName + "/" + hostChr
-			interStrand = insertStrand + "/" + hostStrand
-			hostPos = read.query_alignment_start + 1
-			insertPos = int(insertPos_tmp) + int(insertMap) - 1
+			insertPos = read.query_alignment_start + read.query_alignment_length
+			hostPos = int(hostPos_tmp)
 			if showBases == 0:
 				junctionSeq = insertSeq.lower() + "@" + hostSeq
 			else:
 				junctionSeq = insertSeq[-showBases:].lower() + "@" + hostSeq[0:showBases]
+		else:
+			hostSeq = seq[0:int(hostMap)]
+			interType = hostChr + "/" + plasmidName
+			insertPos = read.query_alignment_start + 1
+			hostPos = int(hostPos_tmp) + int(hostMap) - 1
+			if showBases == 0:
+				junctionSeq = hostSeq + "@" + insertSeq.lower()
+			else:
+				junctionSeq = hostSeq[-showBases:] + "@" + insertSeq[0:showBases].lower()
 
 		## 输出
 		outputList = [
@@ -168,19 +173,16 @@ for read in bamFile:
 			hostChr,
 			str(hostPos),
 			interType,
-			# interStrand,
 			junctionSeq
 		]
 		output = "\t".join(outputList)
 		outputCount.append(output)
-
 
 # 将相同的输出合并，统计总数
 outputDict = Counter(outputCount)
 del outputCount
 
 ## 输出结果到文件
-# results.write("plasmidName\tplasmidPos\thostChr\thostPos\tintegrationType\tinterStrand\tfusionJunctionSeq\tcounts\n")
 results.write("plasmidName\tplasmidPos\thostChr\thostPos\tintegrationType\tfusionJunctionSeq\tcounts\n")
 for output_final in outputDict.keys():
 	result = output_final + "\t" + str(outputDict[output_final]) + "\n"
@@ -191,9 +193,9 @@ bamFile.close()
 elapsed = time.clock() - start
 
 ## 输出最终过滤结果
-print "------------------------------------------"
-print "input reads: " + str(len(readCount))
-print "output reads: " + str(readName_count)
-print str("%.2f" % (float(readName_count) / float(len(readCount)) * 100.00)) + "% reads pass"
-print "task done. time used: ", elapsed, "seconds"
+print("------------------------------------------")
+print("input reads: " + str(len(readCount)))
+print("output reads: " + str(readName_count))
+print(str("%.2f" % (float(readName_count) / float(len(readCount)) * 100.00)) + "% reads pass")
+print("task done. time used: ", elapsed, "seconds")
 exit()
