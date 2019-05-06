@@ -11,6 +11,8 @@ data_use$Type <- colors
 
 jpeg(file=paste(args[3], "/", args[2], ".Z.jpeg", sep=""), width=2000, height=1000)
 p <- ggplot(data_use, aes(x=ID, y=Data, color=Type)) + geom_point()
+
+cols <- c("Up"="blue", "Normal"="green", "Down"="red")
 p + theme(axis.text.x=
 		element_text(
 			size=10,
@@ -21,5 +23,6 @@ p + theme(axis.text.x=
 	) +
 	labs(x="Location ID", y=args[2]) +
 	scale_y_continuous(breaks=c(-5.0, -4.5, -4.0, -3.5, -3.0, 0, 3.0, 3.5, 4.5, 5.0)) +
-	geom_rect(mapping=aes(ymin=-3.0, ymax=3.0, xmin=0, xmax=Inf), alpha=0.01, color=NA)
+	geom_rect(mapping=aes(ymin=-3.0, ymax=3.0, xmin=0, xmax=Inf), alpha=0.01, color=NA) +
+	scale_colour_manual(values=cols)
 dev.off()
