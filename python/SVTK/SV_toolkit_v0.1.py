@@ -14,7 +14,7 @@ def main(function, option):
 	now = os.path.dirname(sys.executable)
 
 	function_dict = {
-		"make_reference": "function/BRCA_reference_v1.0.py",
+		"reference": "function/BRCA_reference_v1.0.py",
 		"calculation": "function/BRCA_analysis_v1.0.py",
 		"summary": "function/BRCA_Long_Del_v0.1.py",
 		"plot": "function/BRCA_plot_v0.1.py"
@@ -31,9 +31,9 @@ if __name__ == "__main__":
 		formatter_class=argparse.RawTextHelpFormatter
 	)
 	parser.add_argument("-v", "--version", action="version", version="Version 0.1 20190506")
-	parser.add_argument("function", choices=("make_reference", "calculation", "summary", "plot"),
+	parser.add_argument("function", choices=("reference", "calculation", "summary", "plot"),
 		help='''
-			make_reference               创建参考文件
+			reference                    创建参考文件
 			calculation                  计算Z值或DQ值
 			summary                      得到最终结果
 			plot                         可视化
