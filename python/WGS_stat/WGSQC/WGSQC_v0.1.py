@@ -22,7 +22,8 @@ def main(function, option):
 
 if __name__ == "__main__":
 	now = os.path.dirname(sys.executable)
-	parser = argparse.ArgumentParser(description="WGS QC stats",
+	parser = argparse.ArgumentParser(
+		description="WGS QC stats  @PZW",
 		prog="WGSQC_v0.1.py",
 		usage="python WGSQC_v0.1.py [-h] <function> <function option>",
 		formatter_class=argparse.RawTextHelpFormatter

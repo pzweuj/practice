@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190513
+# 20190517
 
 import sys
 import os
@@ -33,17 +33,32 @@ def getChromCoverage(inputfile, chrom):
 	return [coverage, depth_cov, depth_all]
 
 
+def readChromName(inputfile):
+	inputFile = open(inputfile, "r")
+	l = []
+	for line in inputFile:
+		lineAS = line.split("\t")
+		chromosome = lineAS[0]
+		l.append(chromosome)
+	news_l = list(set(l))
+	news_l.sort(key=l.index)
+	inputFile.close()
+
+
+	finalList = []
+	for i in range(len(news_l)):
+		if len(news_l[i].split("_")) <= 1:
+			finalList.append(news_l[i])
+
+	return finalList
+
+
+
 def main(inputFile, outputFile):
 
 	output = open(outputFile, "w")
 
-	chromList = ["chrX", "chrY", "chrM"]
-	i = 1
-	while i <= 22:
-		chrom = "chr" + str(i)
-		i += 1
-		chromList.append(chrom)
-
+	chromList = readChromName(inputFile)
 
 	coverage_list = ["覆盖度"]
 	depth_cov_list = ["覆盖区域的平均深度"]
@@ -68,7 +83,7 @@ if __name__ == "__main__":
 		prog="bedtools2qc.py",
 		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.1 20190509")
+		version="Version 1.2 20190517")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
 	parser.add_argument("-o", "--output", type=str,
