@@ -63,7 +63,7 @@ if __name__ == "__main__":
 		prog="fastp2qc.py",
 		usage="python fastp2qc.py -i <fastp.json> -o <results>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.0 2019014")
+		version="Version 1.0 20190514")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output 'fastp.json'")
 	parser.add_argument("-o", "--output", type=str,

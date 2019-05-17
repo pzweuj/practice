@@ -22,7 +22,8 @@ def main(function, option):
 
 if __name__ == "__main__":
 	now = os.path.dirname(sys.executable)
-	parser = argparse.ArgumentParser(description="WGS QC stats",
+	parser = argparse.ArgumentParser(
+		description="WGS QC stats  @PZW",
 		prog="WGSQC_v0.1.py",
 		usage="python WGSQC_v0.1.py [-h] <function> <function option>",
 		formatter_class=argparse.RawTextHelpFormatter
@@ -35,5 +36,8 @@ if __name__ == "__main__":
 	''')
 	parser.add_argument("option", nargs=argparse.REMAINDER, metavar="function option")
 	argcomplete.autocomplete(parser)
+	if len(sys.argv[1:]) == 0:
+		parser.print_help()
+		parser.exit()
 	args = parser.parse_args()
 	main(function=args.function, option=args.option)
