@@ -36,5 +36,8 @@ if __name__ == "__main__":
 	''')
 	parser.add_argument("option", nargs=argparse.REMAINDER, metavar="function option")
 	argcomplete.autocomplete(parser)
+	if len(sys.argv[1:]) == 0:
+		parser.print_help()
+		parser.exit()
 	args = parser.parse_args()
 	main(function=args.function, option=args.option)
