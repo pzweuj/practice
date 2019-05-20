@@ -35,3 +35,8 @@ python WGSQC_v0.1.py bedtools -i sample.cov.txt -o sample.bedtools.txt
 ```bash
 python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1
 ```
+
+当然，也可以一次指定多个染色体，用“,”分隔。
+```bash
+python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1,chr3,chr5
+```
