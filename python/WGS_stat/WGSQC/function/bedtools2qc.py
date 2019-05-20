@@ -110,13 +110,13 @@ if __name__ == "__main__":
 		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
 	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.2 20190517")
+		version="Version 1.5 20190520")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
 	group.add_argument("-o", "--output", type=str,
 		help="output the results")
 	group.add_argument("-chr", "--chromosome", type=str,
-		help="output select chromosome stats e.g1: -chr chr1, e.g2: -chr chr1,chr3,chr5")
+		help="output select chromosome stats e.g1: -chr chr1, e.g2: -chr chr1,chr3,chr5, e.g3: -chr all")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
