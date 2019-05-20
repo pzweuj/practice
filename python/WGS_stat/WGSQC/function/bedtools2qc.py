@@ -54,42 +54,54 @@ def readChromName(inputfile):
 
 
 
-def main(inputFile, outputFile):
+def main(inputFile, outputChr, outputFile):
 
-	output = open(outputFile, "w")
+	if outputFile:
 
-	chromList = readChromName(inputFile)
+		output = open(outputFile, "w")
 
-	coverage_list = ["覆盖度"]
-	depth_cov_list = ["覆盖区域的平均深度"]
-	depth_all_list = ["WGS平均深度"]
+		chromList = readChromName(inputFile)
 
-	for m in chromList:
-		chromi = m.split("\n")[0]
-		print chromi, getChromCoverage(inputFile, chromi)
-		coverage_list.append(getChromCoverage(inputFile, chromi)[0])
-		depth_cov_list.append(getChromCoverage(inputFile, chromi)[1])
-		depth_all_list.append(getChromCoverage(inputFile, chromi)[2])
+		coverage_list = ["覆盖度"]
+		depth_cov_list = ["覆盖区域的平均深度"]
+		depth_all_list = ["WGS平均深度"]
 
-	output.write("\t" + "\t".join(chromList) + "\n")
-	output.write("\t".join(coverage_list) + "\n")
-	output.write("\t".join(depth_cov_list) + "\n")
-	output.write("\t".join(depth_all_list) + "\n")
+		for m in chromList:
+			chromi = m.split("\n")[0]
+			print chromi, getChromCoverage(inputFile, chromi)
+			coverage_list.append(getChromCoverage(inputFile, chromi)[0])
+			depth_cov_list.append(getChromCoverage(inputFile, chromi)[1])
+			depth_all_list.append(getChromCoverage(inputFile, chromi)[2])
 
-	output.close()
+		output.write("\t" + "\t".join(chromList) + "\n")
+		output.write("\t".join(coverage_list) + "\n")
+		output.write("\t".join(depth_cov_list) + "\n")
+		output.write("\t".join(depth_all_list) + "\n")
+
+		output.close()
+
+	if outputChr:
+		print "chromosome\t[coverage, mapped depth, depth]"
+		print outputChr, "\t", getChromCoverage(inputFile, outputChr)
+
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="analysis bedtools output",
 		prog="bedtools2qc.py",
 		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
+	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
 		version="Version 1.2 20190517")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
-	parser.add_argument("-o", "--output", type=str,
+	group.add_argument("-o", "--output", type=str,
 		help="output the results")
+	group.add_argument("-chr", "--chromosome", type=str,
+		help="output select chromosome stats")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(inputFile=args.input, outputFile=args.output)
+	if args.output and args.chromosome:
+		sys.exit("-o and -chr must be only one!")
+	main(inputFile=args.input, outputChr=args.chromosome, outputFile=args.output)
