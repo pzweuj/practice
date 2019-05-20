@@ -82,7 +82,10 @@ def main(inputFile, outputChr, outputFile):
 
 	if outputChr:
 		print "chromosome\t[coverage, mapped depth, depth]"
-		print outputChr, "\t", getChromCoverage(inputFile, outputChr)
+		chromList = outputChr.split(",")
+		for m in chromList:
+			chromi = m.split("\n")[0]
+			print chromi, "\t", getChromCoverage(inputFile, chromi)
 
 
 if __name__ == "__main__":
@@ -97,7 +100,7 @@ if __name__ == "__main__":
 	group.add_argument("-o", "--output", type=str,
 		help="output the results")
 	group.add_argument("-chr", "--chromosome", type=str,
-		help="output select chromosome stats")
+		help="output select chromosome stats e.g1: -chr chr1, e.g2: -chr chr1,chr3,chr5")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
