@@ -31,3 +31,7 @@ bedtools genomecov -ibam sample.sorted.bam -g hg19.fa -bga > sample.cov.txt
 python WGSQC_v0.1.py bedtools -i sample.cov.txt -o sample.bedtools.txt
 ```
 
+也可以单独输出一个染色体的比对信息
+```bash
+python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1
+```
