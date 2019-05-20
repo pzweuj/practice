@@ -70,9 +70,9 @@ def main(inputFile, outputChr, outputFile):
 
 		chromList = readChromName(inputFile)
 
-		coverage_list = ["覆盖度"]
-		depth_cov_list = ["覆盖区域的平均深度"]
-		depth_all_list = ["WGS平均深度"]
+		coverage_list = ["Coverage"]
+		depth_cov_list = ["CoverRegionDepth"]
+		depth_all_list = ["Depth"]
 
 		for m in chromList:
 			chromi = m.split("\n")[0]
