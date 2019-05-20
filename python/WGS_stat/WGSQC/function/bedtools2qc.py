@@ -6,7 +6,7 @@ import sys
 import os
 import argparse
 
-def getChromCoverage(inputfile, chrom):
+def getChromCoverage(inputfile, chrom="all"):
 	inputFile = open(inputfile, "r")
 	length = 0
 	covLength = 0
@@ -18,6 +18,14 @@ def getChromCoverage(inputfile, chrom):
 		end = lineAS[2]
 		count = lineAS[3].split("\n")[0]
 		if chromosome == chrom:
+			length_tmp = int(end) - int(start)
+			length += length_tmp
+			counts += (int(count) * length_tmp)
+			if count != "0":
+				covLength_tmp = length_tmp
+				covLength += covLength_tmp
+
+		if chrom == "all":
 			length_tmp = int(end) - int(start)
 			length += length_tmp
 			counts += (int(count) * length_tmp)
@@ -68,10 +76,18 @@ def main(inputFile, outputChr, outputFile):
 
 		for m in chromList:
 			chromi = m.split("\n")[0]
-			print chromi, getChromCoverage(inputFile, chromi)
-			coverage_list.append(getChromCoverage(inputFile, chromi)[0])
-			depth_cov_list.append(getChromCoverage(inputFile, chromi)[1])
-			depth_all_list.append(getChromCoverage(inputFile, chromi)[2])
+			chromeResults = getChromCoverage(inputFile, chromi)
+			print chromi, chromeResults
+			coverage_list.append(chromeResults[0])
+			depth_cov_list.append(chromeResults[1])
+			depth_all_list.append(chromeResults[2])
+
+		summaryResults = getChromCoverage(inputFile, "all")
+		print "summary", summaryResults
+		chromList.append("summary")
+		coverage_list.append(summaryResults[0])
+		depth_cov_list.append(summaryResults[1])
+		depth_all_list.append(summaryResults[2])
 
 		output.write("\t" + "\t".join(chromList) + "\n")
 		output.write("\t".join(coverage_list) + "\n")
