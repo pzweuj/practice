@@ -36,7 +36,11 @@ python WGSQC_v0.1.py bedtools -i sample.cov.txt -o sample.bedtools.txt
 python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1
 ```
 
-当然，也可以一次指定多个染色体，用“,”分隔。
+当然，也可以一次指定多个染色体，用“,”分隔，同时，输入为"all"时，输出总体信息。
+
+使用参考：
 ```bash
 python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1,chr3,chr5
+python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr all
+python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr all,chr1,chr2
 ```
