@@ -46,8 +46,12 @@ def main(annovarFile, panelSize):
 			if occur >= 4:
 				df4.drop(m, inplace=True)
 
+	for n in df4.index.tolist():
+		if df4.loc[n, "avsnp150"] != ".":
+			df4.drop(n, inplace=True)
+
 	tmb = float(len(df4)) / (float(panelSize) / 1000000)
-	return tmb
+	print tmb
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="calculate TMB",
