@@ -1,13 +1,13 @@
 # pzw
-# 20190514
+# 20190523
 
 import sys
 import json
 import os
 import argparse
 
-def main(jsonFile, outputFile):
-	QC_json = open(jsonFile, "r")
+def main(jsonfile, outputFile):
+	QC_json = open(jsonfile, "r")
 	output = open(outputFile, "w")
 	jsonFile = json.load(QC_json)
 
@@ -40,18 +40,16 @@ def main(jsonFile, outputFile):
 	print "clean Q20: ", after_Q20
 	print "clean Q30: ", after_Q30
 
-	output.write("raw reads: " + str(before_reads) + "\n")
-	output.write("raw bases: " + str(before_bases) + "\n")
-	output.write("raw GC content: " + str(before_GC) + "\n")
-	output.write("raw Q20: " + before_Q20 + "\n")
-	output.write("raw Q30: " + before_Q30 + "\n")
-	output.write("duplication: " + duplicateRate + "\n")
-	output.write("------------------------------------------\n")
-	output.write("clean reads: " + str(after_reads) + "\n")
-	output.write("clean bases: " + str(after_bases) + "\n")
-	output.write("clean GC content: " + after_GC + "\n")
-	output.write("clean Q20: " + after_Q20 + "\n")
-	output.write("clean Q30: " + after_Q30 + "\n")
+	jsonName = ""
+	jsonAS = jsonfile.split("/")
+	for jsons in jsonAS:
+		if jsons.__contains__("json"):
+			jsonName = jsons.split(".json")[0]
+	output.write(jsonName + "\n")
+	output.write("rawdata_reads\trawdata_bases\trawdata_dups\trawdata_GC\trawdata_Q20\trawdata_Q30\tcleandata_reads\tcleandata_bases\tcleandata_GC\tcleandata_Q20\tcleandata_Q30\n")
+
+	outputList = [str(before_reads), str(before_bases), duplicateRate, str(before_GC), before_Q20, before_Q30, str(after_reads), str(after_bases), after_GC, after_Q20, after_Q30]
+	output.write("\t".join(outputList) + "\n")
 
 	output.close()
 	QC_json.close()
@@ -63,7 +61,7 @@ if __name__ == "__main__":
 		prog="fastp2qc.py",
 		usage="python fastp2qc.py -i <fastp.json> -o <results>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.0 20190514")
+		version="Version 1.1 20190523")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output 'fastp.json'")
 	parser.add_argument("-o", "--output", type=str,
@@ -72,4 +70,4 @@ if __name__ == "__main__":
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(jsonFile=args.input, outputFile=args.output)
+	main(jsonfile=args.input, outputFile=args.output)
