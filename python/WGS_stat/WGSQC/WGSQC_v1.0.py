@@ -10,25 +10,26 @@ import argcomplete
 
 def main(function, option):
 
-	now = os.path.dirname(sys.executable)
+	now = os.path.abspath(os.path.dirname(sys.argv[0]))
+	print now
 
 	function_dict = {
-		"bedtools": "/home/zhaowen/workspace/software/WGSQC/function/bedtools2qc.py",
-		"fastp": "/home/zhaowen/workspace/software/WGSQC/function/fastp2qc.py",
+		"bedtools": "/function/bedtools2qc.py",
+		"fastp": "/function/fastp2qc.py",
 	}
 
-	print("python " + os.path.join(now, function_dict[function]) + " " + " ".join(option))
-	subprocess.call("python " + os.path.join(now, function_dict[function]) + " " + " ".join(option), shell=True)
+	print("python " + now + function_dict[function] + " " + " ".join(option))
+	subprocess.call("python " + now + function_dict[function] + " " + " ".join(option), shell=True)
 
 if __name__ == "__main__":
 	now = os.path.dirname(sys.executable)
 	parser = argparse.ArgumentParser(
 		description="WGS QC stats  @PZW",
-		prog="WGSQC_v0.1.py",
-		usage="python WGSQC_v0.1.py [-h] <function> <function option>",
+		prog="WGSQC_v1.0.py",
+		usage="python WGSQC_v1.0.py [-h] <function> <function option>",
 		formatter_class=argparse.RawTextHelpFormatter
 	)
-	parser.add_argument("-v", "--version", action="version", version="Version 0.1 20190514")
+	parser.add_argument("-v", "--version", action="version", version="Version 1.0 20190531")
 	parser.add_argument("function", choices=("bedtools", "fastp"),
 		help='''
 			bedtools                    统计bedtools结果文件
