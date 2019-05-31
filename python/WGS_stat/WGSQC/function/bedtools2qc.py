@@ -40,6 +40,18 @@ def getChromCoverage(inputfile, chrom="all"):
 
 	return [coverage, depth_cov, depth_all]
 
+def cutsom_sort(t):
+	tt = t.split("chr")[1]
+	if tt == "Y":
+		tt = 24
+	elif tt == "X":
+		tt = 23
+	elif tt == "M":
+		tt = 0
+	else:
+		tt = int(tt)
+	return tt
+
 
 def readChromName(inputfile):
 	inputFile = open(inputfile, "r")
@@ -48,16 +60,14 @@ def readChromName(inputfile):
 		lineAS = line.split("\t")
 		chromosome = lineAS[0]
 		l.add(chromosome)
-	news_l = list(l)
-	news_l.sort(key=l.index)
+	l = list(l)
 	inputFile.close()
 
-
 	finalList = []
-	for i in range(len(news_l)):
-		if len(news_l[i].split("_")) <= 1:
-			finalList.append(news_l[i])
-
+	for i in l:
+		if len(i.split("_")) <= 1:
+			finalList.append(i)
+	finalList.sort(key=cutsom_sort)
 	return finalList
 
 
@@ -101,7 +111,7 @@ def main(inputFile, outputChr, outputFile):
 		chromList = outputChr.split(",")
 		for m in chromList:
 			chromi = m.split("\n")[0]
-			print (chromi, "\t", getChromCoverage(inputFile, chromi))
+			print(chromi, "\t", getChromCoverage(inputFile, chromi))
 
 
 if __name__ == "__main__":
