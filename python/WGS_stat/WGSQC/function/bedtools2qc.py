@@ -77,13 +77,13 @@ def main(inputFile, outputChr, outputFile):
 		for m in chromList:
 			chromi = m.split("\n")[0]
 			chromeResults = getChromCoverage(inputFile, chromi)
-			print chromi, chromeResults
+			print(chromi, chromeResults)
 			coverage_list.append(chromeResults[0])
 			depth_cov_list.append(chromeResults[1])
 			depth_all_list.append(chromeResults[2])
 
 		summaryResults = getChromCoverage(inputFile, "all")
-		print "summary", summaryResults
+		print("summary", summaryResults)
 		chromList.append("summary")
 		coverage_list.append(summaryResults[0])
 		depth_cov_list.append(summaryResults[1])
@@ -97,11 +97,11 @@ def main(inputFile, outputChr, outputFile):
 		output.close()
 
 	if outputChr:
-		print "chromosome\t[coverage, mapped depth, depth]"
+		print("chromosome\t[coverage, mapped depth, depth]")
 		chromList = outputChr.split(",")
 		for m in chromList:
 			chromi = m.split("\n")[0]
-			print chromi, "\t", getChromCoverage(inputFile, chromi)
+			print (chromi, "\t", getChromCoverage(inputFile, chromi))
 
 
 if __name__ == "__main__":

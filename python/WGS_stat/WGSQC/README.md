@@ -1,12 +1,12 @@
 # 使用说明
 
-pzw 
+pzw
 
 20190531
 
 ## 说明
 程序能统计fastp以及bedtools的下游数据，目的是统计WGS样本的质量。
-
+基于python3，在python2下直接print出的结果会有标点符号上的差异。
 
 ### fastp
 使用fastp进行样本质控

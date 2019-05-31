@@ -27,18 +27,18 @@ def main(jsonfile, outputFile):
 	after_Q20 = "%.2f" % (afterFilter["q20_rate"] * 100) + "%"
 	after_Q30 = "%.2f" % (afterFilter["q30_rate"] * 100) + "%"
 
-	print "raw reads: ", before_reads
-	print "raw bases: ", before_bases
-	print "raw GC content: ", before_GC
-	print "raw Q20: ", before_Q20
-	print "raw Q30: ", before_Q30
-	print "duplication: ", duplicateRate
-	print "------------------------------------------"
-	print "clean reads: ", after_reads
-	print "clean bases: ", after_bases
-	print "clean GC content: ", after_GC
-	print "clean Q20: ", after_Q20
-	print "clean Q30: ", after_Q30
+	print("raw reads: ", before_reads)
+	print("raw bases: ", before_bases)
+	print("raw GC content: ", before_GC)
+	print("raw Q20: ", before_Q20)
+	print("raw Q30: ", before_Q30)
+	print("duplication: ", duplicateRate)
+	print("------------------------------------------")
+	print("clean reads: ", after_reads)
+	print("clean bases: ", after_bases)
+	print("clean GC content: ", after_GC)
+	print("clean Q20: ", after_Q20)
+	print("clean Q30: ", after_Q30)
 
 	jsonName = ""
 	jsonAS = jsonfile.split("/")
@@ -54,7 +54,7 @@ def main(jsonfile, outputFile):
 	output.close()
 	QC_json.close()
 
-	print "fastp output file analysis done"
+	print("fastp output file analysis done")
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="analysis fastp output",

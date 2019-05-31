@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190514
+# 20190531
 
 import sys
 import os
@@ -11,7 +11,6 @@ import argcomplete
 def main(function, option):
 
 	now = os.path.abspath(os.path.dirname(sys.argv[0]))
-	print now
 
 	function_dict = {
 		"bedtools": "/function/bedtools2qc.py",
@@ -32,8 +31,8 @@ if __name__ == "__main__":
 	parser.add_argument("-v", "--version", action="version", version="Version 1.0 20190531")
 	parser.add_argument("function", choices=("bedtools", "fastp"),
 		help='''
-			bedtools                    统计bedtools结果文件
-			fastp                       统计fastp结果文件
+			bedtools                    analysis bedtools genenocov results
+			fastp                       analysis fastp json file
 	''')
 	parser.add_argument("option", nargs=argparse.REMAINDER, metavar="function option")
 	argcomplete.autocomplete(parser)
