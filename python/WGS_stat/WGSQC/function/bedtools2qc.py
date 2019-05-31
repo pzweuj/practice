@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190517
+# 20190531
 
 import sys
 import os
@@ -43,12 +43,12 @@ def getChromCoverage(inputfile, chrom="all"):
 
 def readChromName(inputfile):
 	inputFile = open(inputfile, "r")
-	l = []
+	l = set()
 	for line in inputFile:
 		lineAS = line.split("\t")
 		chromosome = lineAS[0]
-		l.append(chromosome)
-	news_l = list(set(l))
+		l.add(chromosome)
+	news_l = list(l)
 	news_l.sort(key=l.index)
 	inputFile.close()
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
 	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.5 20190520")
+		version="Version 1.6 20190531")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
 	group.add_argument("-o", "--output", type=str,
