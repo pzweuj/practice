@@ -29,7 +29,7 @@ python WGSQC_v0.1.py fastp -i sample.json -o sample.fastp.txt
 
 ### bedtools
 通过bedtools分析样本的测序深度与覆盖度
-**注：比对到hg19.fa的bam文件，理论上染色体表示为“chrx”的样本均可**
+**注：比对到hg19.fa的bam文件，理论上染色体表示为“chrX”的样本或者纯数字的样本均可**
 ```bash
 bedtools genomecov -ibam sample.sorted.bam -g hg19.fa -bga > sample.cov.txt
 ```

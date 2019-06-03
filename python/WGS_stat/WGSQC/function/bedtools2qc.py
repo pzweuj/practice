@@ -41,15 +41,18 @@ def getChromCoverage(inputfile, chrom="all"):
 	return [coverage, depth_cov, depth_all]
 
 def cutsom_sort(t):
-	tt = t.split("chr")[1]
-	if tt == "Y":
-		tt = 24
-	elif tt == "X":
-		tt = 23
-	elif tt == "M":
-		tt = 0
+	if "chr" in t:
+		tt = t.split("chr")[1]
+		if tt == "Y":
+			tt = 24
+		elif tt == "X":
+			tt = 23
+		elif tt == "M":
+			tt = 0
+		else:
+			tt = int(tt)
 	else:
-		tt = int(tt)
+		tt = int(t)
 	return tt
 
 
