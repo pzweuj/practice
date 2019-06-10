@@ -57,6 +57,21 @@ def FastpfilterPair(input1, input2, output1, output2, jsonFile, htmlFile, thread
 	os.system(cmd)
 	print("[filter done]", getTime())
 
+def FastpfilterSingle(input1, output1, jsonFile, htmlFile, thread):
+	fastp = getAbsPath() + "/software/fastp"
+	print("[filter start]", getTime())
+	cmd = """
+		{fastp} \\
+			-i {input1} \\
+			-o {output1} \\
+			-j {jsonFile} \\
+			-h {htmlFile} \\
+			-w {thread} \\
+			-q 5 -u 50 -n 15
+	""".format(fastp=fastp, input1=input1, output1=output1, jsonFile=jsonFile, htmlFile=htmlFile, thread=thread)
+	os.system(cmd)
+	print("[filter done]", getTime())
+
 
 def mappingPair(input1, input2, output, thread):
 	print("[mapping start]", getTime())
@@ -67,6 +82,19 @@ def mappingPair(input1, input2, output, thread):
 		{bwa} mem -t {thread} {reference} {input1} {input2} | {samtools} view -bSh - | \\
 			{samtools} sort -@ {thread} - -o {output}
 	""".format(bwa=bwa, thread=thread, reference=reference, input1=input1, input2=input2, output=output, samtools=samtools)
+	os.system(cmd)
+	print("[mapping done]", getTime())
+
+
+def mappingSingle(input1, output, thread):
+	print("[mapping start]", getTime())
+	bwa = getAbsPath() + "/software/bwa-0.7.17/bwa"
+	samtools = getAbsPath() + "/software/samtools"
+	reference = getAbsPath() + "/reference/hg19.fa"
+	cmd = """
+		{bwa} mem -t {thread} {reference} {input1} | {samtools} view -bSh - | \\
+			{samtools} sort -@ {thread} - -o {output}
+	""".format(bwa=bwa, thread=thread, reference=reference, input1=input1, output=output, samtools=samtools)
 	os.system(cmd)
 	print("[mapping done]", getTime())
 
@@ -197,44 +225,87 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 				threads
 			)
 
-			makeBam(sample, outputDir)
-
+		elif len(process[sample]) == 1:
+			print("only find 1 rawdata, guess its single end.")
+			read = inputDir + "/" + process[sample][0]
 			cmd = """
-				if [ ! -d "{outputDir}/vcf" ]; then
-					mkdir {outputDir}/vcf
+				if [ ! -d "{outputDir}" ]; then
+					mkdir {outputDir}
 				fi
-				rm -rf {outputDir}/temp
-			""".format(outputDir=outputDir)
-			os.system(cmd)
 
-			if bed != "":
-				convertBedToIntervalList(bed, "{outputDir}/temp/temp.list".format(outputDir=outputDir))
-				callsnp(
-					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
-					outputDir + "/vcf/{sample}.vcf".format(sample=sample),
-					outputDir + "/temp/temp.list"
-				)
-			else:
-				callsnp(
-					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
-					outputDir + "/vcf/{sample}.vcf".format(sample=sample)
-				)
-
-			cmd = """
-				if [ ! -d "{outputDir}/annotation" ]; then
-					mkdir {outputDir}/annotation
+				if [ ! -d "{outputDir}/QC" ]; then
+					mkdir {outputDir}/QC
 				fi
-				rm {outputDir}/temp/temp.interval
+
+				if [ ! -d "{outputDir}/cleandata" ]; then
+					mkdir {outputDir}/cleandata
+				fi
+
 			""".format(outputDir=outputDir)
 			os.system(cmd)
 
-			annotate(outputDir, sample, threads)
+
+			FastpfilterSingle(
+				read,
+				outputDir + "/cleandata/{sample}.fq.gz".format(sample=sample),
+				outputDir + "/QC/{sample}.json".format(sample=sample),
+				outputDir + "/QC/{sample}.html".format(sample=sample),
+				threads
+			)
+
+
 			cmd = """
-				rm {outputDir}/annotation/avinput
+				if [ ! -d "{outputDir}/temp" ]; then
+					mkdir {outputDir}/temp
+				fi
 			""".format(outputDir=outputDir)
 			os.system(cmd)
+
+			mappingSingle(
+				outputDir + "/cleandata/{sample}.fq.gz".format(sample=sample),
+				outputDir + "/temp/{sample}.bam".format(sample=sample),
+				threads
+			)
+
 		else:
+			print("find more than 2 rawdata, skip this sample")
 			continue
+
+		makeBam(sample, outputDir)
+
+		cmd = """
+			if [ ! -d "{outputDir}/vcf" ]; then
+				mkdir {outputDir}/vcf
+			fi
+		""".format(outputDir=outputDir)
+		os.system(cmd)
+
+		if bed != "":
+			convertBedToIntervalList(bed, "{outputDir}/temp/temp.list".format(outputDir=outputDir))
+			callsnp(
+				outputDir + "/bam/{sample}.final.bam".format(sample=sample),
+				outputDir + "/vcf/{sample}.vcf".format(sample=sample),
+				outputDir + "/temp/temp.list"
+			)
+		else:
+			callsnp(
+				outputDir + "/bam/{sample}.final.bam".format(sample=sample),
+				outputDir + "/vcf/{sample}.vcf".format(sample=sample)
+			)
+
+		cmd = """
+			if [ ! -d "{outputDir}/annotation" ]; then
+				mkdir {outputDir}/annotation
+			fi
+			rm -rf {outputDir}/temp
+		""".format(outputDir=outputDir)
+		os.system(cmd)
+
+		annotate(outputDir, sample, threads)
+		cmd = """
+			rm {outputDir}/annotation/avinput
+		""".format(outputDir=outputDir)
+		os.system(cmd)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Germline Pipeline",
