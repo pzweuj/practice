@@ -269,9 +269,11 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 			)
 		elif len(process[sample]) == 0:
 			print("can not find sample, please check sample ID or rawdata")
+			continue
 
 		else:
 			print("find more than 2 rawdata, skip this sample")
+			continue
 
 		makeBam(sample, outputDir)
 
