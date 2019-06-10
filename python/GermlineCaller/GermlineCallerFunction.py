@@ -208,11 +208,11 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 			os.system(cmd)
 
 			if bed != "":
-				convertBedToIntervalList(bed, "{outputDir}/temp/temp.interval")
+				convertBedToIntervalList(bed, "{outputDir}/temp/temp.list".format(outputDir=outputDir))
 				callsnp(
 					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
 					outputDir + "/vcf/{sample}.vcf".format(sample=sample),
-					outputDir + "/temp/temp.interval"
+					outputDir + "/temp/temp.list"
 				)
 			else:
 				callsnp(
