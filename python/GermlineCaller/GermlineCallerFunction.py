@@ -181,6 +181,7 @@ def annotate(outputDir, sample, thread):
 def main(inputDir, outputDir, sampleList, bed, threads):
 	process = sampleReady(sampleList, inputDir)
 	for sample in process:
+		print(sample, "begin: ", getTime())
 		if len(process[sample]) == 2:
 			read1 = inputDir + "/" + process[sample][0]
 			read2 = inputDir + "/" + process[sample][1]
@@ -266,10 +267,11 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 				outputDir + "/temp/{sample}.bam".format(sample=sample),
 				threads
 			)
+		elif len(process[sample]) == 0:
+			print("can not find sample, please check sample ID or rawdata")
 
 		else:
 			print("find more than 2 rawdata, skip this sample")
-			continue
 
 		makeBam(sample, outputDir)
 
@@ -306,14 +308,16 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 			rm {outputDir}/annotation/avinput
 		""".format(outputDir=outputDir)
 		os.system(cmd)
+		print(sample, "finish: ", getTime())
+		print("##################################")
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Germline Pipeline",
-		prog="GermlineCallerFunction.py",
-		usage="python GermlineCallerFunction.py -i <input dir> -o <output dir> -s <sample list> -t <threads>")
+	parser = argparse.ArgumentParser(description="Germline Pipeline by genephar",
+		prog="GermlineCaller",
+		usage="GermlineCaller -i <input dir> -o <output dir> -s <sample list> -t <threads>")
 	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.3 20190606")
+		version="Version 1.0 20190610")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the directory of the fq.gz file")
 	parser.add_argument("-o", "--output", type=str,
@@ -321,7 +325,7 @@ if __name__ == "__main__":
 	parser.add_argument("-s", "--samplelist", type=str,
 		help="sample list, one id in each row")
 	parser.add_argument("-b", "--bed", type=str, default="",
-		help="input bed file")
+		help="input bed file, optional")
 	parser.add_argument("-t", "--threads", type=int, default=4,
 		help="threads, default=4")
 	if len(sys.argv[1:]) == 0:
