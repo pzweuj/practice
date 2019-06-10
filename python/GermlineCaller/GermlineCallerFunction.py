@@ -212,7 +212,7 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 				callsnp(
 					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
 					outputDir + "/vcf/{sample}.vcf".format(sample=sample),
-					outputDir + "temp/temp.interval"
+					outputDir + "/temp/temp.interval"
 				)
 			else:
 				callsnp(
