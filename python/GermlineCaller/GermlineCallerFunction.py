@@ -97,16 +97,39 @@ def makeBam(sample, outputDir):
 	print("[Recalibrator done]", getTime())
 
 
-def callsnp(inputBam, outputVcf):
+def convertBedToIntervalList(bed, intervalList):
+	gatk = getAbsPath() + "/software/gatk-4.1.2.0/gatk"
+	referDict = getAbsPath() + "/reference/hg19.dict"
+	cmd = """
+		{gatk} BedToIntervalList \\
+			-SD {referDict} \\
+			-I {bed} \\
+			-O {intervalList}
+	""".format(gatk=gatk, referDict=referDict, bed=bed, intervalList=intervalList)
+	os.system(cmd)
+
+
+def callsnp(inputBam, outputVcf, intervalList=""):
 	print("[call snp start]", getTime())
 	gatk = getAbsPath() + "/software/gatk-4.1.2.0/gatk"
 	reference = getAbsPath() + "/reference/hg19.fa"
-	cmd = """
-		{gatk} HaplotypeCaller \\
-			-R {reference} \\
-			-I {inputBam} \\
-			-O {outputVcf}
-	""".format(gatk=gatk, reference=reference, inputBam=inputBam, outputVcf=outputVcf)
+
+	if intervalList == "":
+		cmd = """
+			{gatk} HaplotypeCaller \\
+				-R {reference} \\
+				-I {inputBam} \\
+				-O {outputVcf}
+		""".format(gatk=gatk, reference=reference, inputBam=inputBam, outputVcf=outputVcf)
+	
+	else:
+		cmd = """
+			{gatk} HaplotypeCaller \\
+				-R {reference} \\
+				-I {inputBam} \\
+				-L {intervalList} \\
+				-O {outputVcf}
+		""".format(gatk=gatk, reference=reference, inputBam=inputBam, outputVcf=outputVcf, intervalList=intervalList)
 	os.system(cmd)
 	print("[call snp done]", getTime())
 
@@ -119,15 +142,15 @@ def annotate(outputDir, sample, thread):
 		{annovarDir}/convert2annovar.pl -format vcf4 {outputDir}/vcf/{sample}.vcf > {outputDir}/annotation/avinput
 		{annovarDir}/table_annovar.pl {outputDir}/annotation/avinput {humandb} -buildver hg19 \\
 			-out {outputDir}/annotation/{sample} -remove \\
-			-protocol refGene,cytoBand,avsnp150,1000g2015aug_all,1000g2015aug_eas,exac03,clinvar_20190305,cosmic70 \\
-			-operation g,r,f,f,f,f,f,f \\
+			-protocol refGene,cytoBand,avsnp150,1000g2015aug_all,1000g2015aug_eas,exac03,clinvar_20190305,cosmic70,dbnsfp35a \\
+			-operation g,r,f,f,f,f,f,f,f \\
 			-nastring . -thread {thread} -otherinfo
 	""".format(outputDir=outputDir, sample=sample, annovarDir=annovarDir, thread=thread, humandb=humandb)
 	os.system(cmd)
 	print("[annotate done]", getTime())
 
 
-def main(inputDir, outputDir, sampleList, threads):
+def main(inputDir, outputDir, sampleList, bed, threads):
 	process = sampleReady(sampleList, inputDir)
 	for sample in process:
 		if len(process[sample]) == 2:
@@ -184,13 +207,24 @@ def main(inputDir, outputDir, sampleList, threads):
 			""".format(outputDir=outputDir)
 			os.system(cmd)
 
-
-			callsnp(outputDir + "/bam/{sample}.final.bam".format(sample=sample), outputDir + "/vcf/{sample}.vcf".format(sample=sample))
+			if bed != "":
+				convertBedToIntervalList(bed, "{outputDir}/temp/temp.interval")
+				callsnp(
+					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
+					outputDir + "/vcf/{sample}.vcf".format(sample=sample),
+					outputDir + "temp/temp.interval"
+				)
+			else:
+				callsnp(
+					outputDir + "/bam/{sample}.final.bam".format(sample=sample),
+					outputDir + "/vcf/{sample}.vcf".format(sample=sample)
+				)
 
 			cmd = """
 				if [ ! -d "{outputDir}/annotation" ]; then
 					mkdir {outputDir}/annotation
-				fi	
+				fi
+				rm {outputDir}/temp/temp.interval
 			""".format(outputDir=outputDir)
 			os.system(cmd)
 
@@ -215,10 +249,12 @@ if __name__ == "__main__":
 		help="the output directory")
 	parser.add_argument("-s", "--samplelist", type=str,
 		help="sample list, one id in each row")
+	parser.add_argument("-b", "--bed", type=str, default="",
+		help="input bed file")
 	parser.add_argument("-t", "--threads", type=int, default=4,
 		help="threads, default=4")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(inputDir=args.input, outputDir=args.chromosome, sampleList=args.samplelist, threads=threads)
+	main(inputDir=args.input, outputDir=args.output, sampleList=args.samplelist, bed=args.bed, threads=args.threads)
