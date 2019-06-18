@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190531
+# 20190618
 
 import sys
 import os
@@ -17,6 +17,13 @@ def getChromCoverage(inputfile, chrom="all"):
 		start = lineAS[1]
 		end = lineAS[2]
 		count = lineAS[3].split("\n")[0]
+
+		if "e+" in count:
+			sci = count.split("e+")
+			f = float(sci[0]) * (10 ** int(sci[1]))
+			f = int(f)
+			count = str(f)
+
 		if chromosome == chrom:
 			length_tmp = int(end) - int(start)
 			length += length_tmp
@@ -41,18 +48,15 @@ def getChromCoverage(inputfile, chrom="all"):
 	return [coverage, depth_cov, depth_all]
 
 def cutsom_sort(t):
-	if "chr" in t:
-		tt = t.split("chr")[1]
-		if tt == "Y":
-			tt = 24
-		elif tt == "X":
-			tt = 23
-		elif tt == "M":
-			tt = 0
-		else:
-			tt = int(tt)
+	tt = t.split("chr")[1]
+	if tt == "Y":
+		tt = 24
+	elif tt == "X":
+		tt = 23
+	elif tt == "M":
+		tt = 0
 	else:
-		tt = int(t)
+		tt = int(tt)
 	return tt
 
 
@@ -123,7 +127,7 @@ if __name__ == "__main__":
 		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
 	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.6 20190531")
+		version="Version 1.7 20190618")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
 	group.add_argument("-o", "--output", type=str,
