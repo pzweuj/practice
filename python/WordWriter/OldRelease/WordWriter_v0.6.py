@@ -223,8 +223,8 @@ def WordWriter(inputDocx, outputDocx, replaceDict):
 
 # # 此处输入的是文件路径
 # testDict["#[TABLE-1]#"] = "testTable.txt"
-# testDict["#[IMAGE-1-(30,30)]#"] = "testPicture.png"
-# testDict["#[IMAGE-2]#"] = "testPicture.png"
+# testDict["#[IMAGE-1-(30,30)]#"] = "testPicture.jpg"
+# testDict["#[IMAGE-2]#"] = "testPicture.jpg"
 
 # # 使用主函数进行报告填充
 # WordWriter("test.docx", "testOut.docx", testDict)
