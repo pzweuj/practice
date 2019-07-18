@@ -39,8 +39,8 @@ testDict["#[FOOTER]#"] = "页脚测试"
 
 # 表格标签，图片标签指定的是文件，其中表格标签输入文件是以tab分割的文本，无标题
 testDict["#[TABLE-1]#"] = "testTable.txt"
-testDict["#[IMAGE-1-(30,30)]#"] = "testPicture.jpg"
-testDict["#[IMAGE-2]#"] = "testPicture.jpg"
+testDict["#[IMAGE-1-(30,30)]#"] = "testPicture.png"
+testDict["#[IMAGE-2]#"] = "testPicture.png"
 
 # 使用主函数进行报告填充
 WordWriter("test.docx", "testOut.docx", testDict)
