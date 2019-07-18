@@ -1,6 +1,7 @@
 # coding=utf-8
 # pzw
 # 20190718
+# v0.7 删除表格空行
 # v0.6 去除冗余代码
 # v0.5 修复表格第一行不能是纯数字的bug
 # v0.4 页眉页脚
@@ -77,6 +78,12 @@ def insertPicture(document, tag, picturePath):
 def OriginTableReadyToFill(tableFile):
 	table = pd.read_csv(tableFile, header=None, sep="\t")
 	return table
+
+## 删除表格行
+def remove_row(table, row):
+	tbl = table._tbl
+	tr = row._tr
+	tbl.remove(tr)
 
 ## 表格插入功能
 def fillTable(document, tag, insertTable):
@@ -160,6 +167,16 @@ def fillTable(document, tag, insertTable):
 
 		start += 1
 		row_id += 1
+
+	# 删除表格空行
+	for row in table.rows:
+		pString = ""
+		for cell in row.cells:
+			for p in cell.paragraphs:
+				pString = pString + p.text
+
+		if pString == "":
+			remove_row(table, row)
 
 	del tableToFill
 
