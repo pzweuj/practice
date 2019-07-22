@@ -43,5 +43,5 @@ testDict["#[IMAGE-1-(30,30)]#"] = "testPicture.png"
 testDict["#[IMAGE-2]#"] = "testPicture.png"
 
 # 使用主函数进行报告填充
-WordWriter("test.docx", "testOut.docx", testDict)
+WordWriter.WordWriter("test.docx", "testOut.docx", testDict)
 ```
