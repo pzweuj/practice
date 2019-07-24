@@ -1,6 +1,7 @@
 # coding=utf-8
 # pzw
-# 20190718
+# 20190722
+# v0.8 支持每个节定义不同的页眉页脚
 # v0.7 删除表格空行
 # v0.6 去除冗余代码
 # v0.5 修复表格第一行不能是纯数字的bug
@@ -183,21 +184,21 @@ def fillTable(document, tag, insertTable):
 
 ## 页脚
 def footer(document, tag, replaceString):
-	section = document.sections[0]
-	footer = section.footer
-	for p in footer.paragraphs:
-		for r in p.runs:
-			if tag in r.text:
-				r.text = unicode(replaceString, "utf-8")
+	for s in document.sections:
+		footer = s.footer
+		for p in footer.paragraphs:
+			for r in p.runs:
+				if tag in r.text:
+					r.text = unicode(replaceString, "utf-8")
 
 ## 页眉
 def header(document, tag, replaceString):
-	section = document.sections[0]
-	header = section.header
-	for p in header.paragraphs:
-		for r in p.runs:
-			if tag in r.text:
-				r.text = unicode(replaceString, "utf-8")
+	for s in document.sections:
+		header = s.header
+		for p in header.paragraphs:
+			for r in p.runs:
+				if tag in r.text:
+					r.text = unicode(replaceString, "utf-8")
 
 
 
