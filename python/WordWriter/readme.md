@@ -26,6 +26,8 @@ import WordWriter3
 
 其他文本内容标签可自定义#[xxxx]#。
 
+目前不支持修改文本框中的文字。
+
 #### 实例
 test.docx是自定义模板。
 
