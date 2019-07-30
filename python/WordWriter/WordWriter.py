@@ -1,6 +1,7 @@
 # coding=utf-8
 # pzw
-# 20190722
+# 20190730
+# v0.9 定位表格位置功能更新
 # v0.8 支持每个节定义不同的页眉页脚
 # v0.7 删除表格空行
 # v0.6 去除冗余代码
@@ -86,6 +87,13 @@ def remove_row(table, row):
 	tr = row._tr
 	tbl.remove(tr)
 
+
+## 合并第一列的相同单元格
+# def mergeFirstColumnCell(cell1, cell2):
+# 	cell2.text.strip(cell2.text)
+# 	cell1.merge(cell2)
+
+
 ## 表格插入功能
 def fillTable(document, tag, insertTable):
 	tableToFill = OriginTableReadyToFill(insertTable)
@@ -152,9 +160,9 @@ def fillTable(document, tag, insertTable):
 	start = 0
 	while row_id <= rowToFill:
 		for co in range(columnToFill):
-			table.cell(row_id, co).text = unicode(str(tableToFill.iloc[start, co]), "utf-8")
-			table.cell(row_id, co).paragraphs[0].style = styleList[co]
-			table.cell(row_id, co).paragraphs[0].alignment = alignmentList[co]
+			table.cell(row_id, co + cell_id).text = unicode(str(tableToFill.iloc[start, co]), "utf-8")
+			table.cell(row_id, co + cell_id).paragraphs[0].style = styleList[co]
+			table.cell(row_id, co + cell_id).paragraphs[0].alignment = alignmentList[co]
 
 			for r in table.cell(row_id, co).paragraphs[0].runs:
 				r.bold = boldList[co]
