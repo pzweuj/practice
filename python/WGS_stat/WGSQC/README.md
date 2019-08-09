@@ -2,7 +2,7 @@
 
 pzw
 
-20190531
+20190808
 
 ## 说明
 程序能统计fastp以及bedtools的下游数据，目的是统计WGS样本的质量。
@@ -23,7 +23,7 @@ fastp -i sample.R1.fq.gz -I sample.R2.fq.gz -o sample.clean.R1.fq.gz -O sample.R
 
 程序的fastp功能通过读取sample.json文件统计质量信息
 ```bash
-python WGSQC_v0.1.py fastp -i sample.json -o sample.fastp.txt
+python WGSQC_v1.0.py fastp -i sample.json -o sample.fastp.txt
 ```
 
 
@@ -36,19 +36,19 @@ bedtools genomecov -ibam sample.sorted.bam -bga > sample.cov.txt
 
 程序的bedtools功能可读取sample.cov.txt文件统计覆盖度信息以及平均深度
 ```bash
-python WGSQC_v0.1.py bedtools -i sample.cov.txt -o sample.bedtools.txt
+python WGSQC_v1.0.py bedtools -i sample.cov.txt -o sample.bedtools.txt
 ```
 
 也可以单独输出一个染色体的比对信息
 ```bash
-python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1
+python WGSQC_v1.0.py bedtools -i sample.cov.txt -chr chr1
 ```
 
 当然，也可以一次指定多个染色体，用“,”分隔，同时，输入为"all"时，输出总体信息。
 
 使用参考：
 ```bash
-python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr chr1,chr3,chr5
-python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr all
-python WGSQC_v0.1.py bedtools -i sample.cov.txt -chr all,chr1,chr2
+python WGSQC_v1.0.py bedtools -i sample.cov.txt -chr chr1,chr3,chr5
+python WGSQC_v1.0.py bedtools -i sample.cov.txt -chr all
+python WGSQC_v1.0.py bedtools -i sample.cov.txt -chr all,chr1,chr2
 ```

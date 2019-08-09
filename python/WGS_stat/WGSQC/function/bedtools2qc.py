@@ -129,7 +129,7 @@ if __name__ == "__main__":
 	parser.add_argument("-v", "--version", action="version",
 		version="Version 1.7 20190618")
 	parser.add_argument("-i", "--input", type=str,
-		help="Input the file which output from 'bedtools genomecov -ibam bam -g reference -bga'")
+		help="Input the file which output from 'bedtools genomecov -ibam bam -bga'")
 	group.add_argument("-o", "--output", type=str,
 		help="output the results")
 	group.add_argument("-chr", "--chromosome", type=str,
