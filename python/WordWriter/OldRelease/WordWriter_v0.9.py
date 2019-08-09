@@ -1,7 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190809
-# v1.0 修正表格格式刷位置
+# 20190730
 # v0.9 定位表格位置功能更新
 # v0.8 支持每个节定义不同的页眉页脚
 # v0.7 删除表格空行
@@ -161,19 +160,19 @@ def fillTable(document, tag, insertTable):
 	start = 0
 	while row_id <= rowToFill:
 		for co in range(columnToFill):
-			table.cell(row_id, co + cell_id).text = str(tableToFill.iloc[start, co])
-			table.cell(row_id, co + cell_id).paragraphs[0].style = styleList[co + cell_id]
-			table.cell(row_id, co + cell_id).paragraphs[0].alignment = alignmentList[co + cell_id]
+			table.cell(row_id, co + cell_id).text = unicode(str(tableToFill.iloc[start, co]), "utf-8")
+			table.cell(row_id, co + cell_id).paragraphs[0].style = styleList[co]
+			table.cell(row_id, co + cell_id).paragraphs[0].alignment = alignmentList[co]
 
-			for r in table.cell(row_id, co + cell_id).paragraphs[0].runs:
-				r.bold = boldList[co + cell_id]
-				r.italic = italicList[co + cell_id]
-				r.font.name = fontNameList[co + cell_id]
-				r.font.size = fontSizeList[co + cell_id]
-				r.font.color.rgb = colorList[co + cell_id]
-				r.font.highlight_color = highlight_colorList[co + cell_id]
+			for r in table.cell(row_id, co).paragraphs[0].runs:
+				r.bold = boldList[co]
+				r.italic = italicList[co]
+				r.font.name = fontNameList[co]
+				r.font.size = fontSizeList[co]
+				r.font.color.rgb = colorList[co]
+				r.font.highlight_color = highlight_colorList[co]
 
-			table.cell(row_id, co + cell_id).vertical_alignment = cellAlignmentList[co + cell_id]
+			table.cell(row_id, co).vertical_alignment = cellAlignmentList[co]
 
 		start += 1
 		row_id += 1
