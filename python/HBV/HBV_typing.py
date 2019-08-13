@@ -61,18 +61,18 @@ def main(blastResultFile, readCut):
 	bestHitPercent = float(ReadDictResults[0][1]) / nReads
 	if nReads >= readCut:
 		if bestHitPercent >= 0.85:
-			print "Best hit: HBV type ", ReadDictResults[0][0], ", percentage: ", bestHitPercent, ", counts: ", ReadDictResults[0][1]
+			print ReadDictResults[0][0] + "\t" + str("%.2f" % float(bestHitPercent*100)) + "%\t" + str(ReadDictResults[0][1])
 		elif bestHitPercent >= 0.45:
-			print "Best hit: HBV type ", ReadDictResults[0][0], ", percentage: ", bestHitPercent, ", counts: ", ReadDictResults[0][1]
-			print "Second hit: HBV type ", ReadDictResults[1][0], ", percentage: ", float(ReadDictResults[1][1]) / nReads, ", counts: ", ReadDictResults[1][1]
+			print ReadDictResults[0][0] + "\t" + str("%.2f" % float(bestHitPercent*100)) + "%\t" + str(ReadDictResults[0][1])
+			print ReadDictResults[1][0] + "\t" + str("%.2f" % (float(ReadDictResults[1][1]) / nReads * 100)) + "%\t" + str(ReadDictResults[1][1])
 		elif bestHitPercent >= 0.3:
-			print "Best hit: HBV type ", ReadDictResults[0][0], ", percentage: ", bestHitPercent, ", counts: ", ReadDictResults[0][1]
-			print "Second hit: HBV type ", ReadDictResults[1][0], ", percentage: ", float(ReadDictResults[1][1]) / nReads, ", counts: ", ReadDictResults[1][1]
-			print "Third hit: HBV type ", ReadDictResults[2][0], ", percentage: ", float(ReadDictResults[2][1]) / nReads, ", counts: ", ReadDictResults[2][1]
+			print ReadDictResults[0][0] + "\t" + str("%.2f" % float(bestHitPercent*100)) + "%\t" + str(ReadDictResults[0][1])
+			print ReadDictResults[1][0] + "\t" + str("%.2f" % (float(ReadDictResults[1][1]) / nReads * 100)) + "%\t" + str(ReadDictResults[1][1])
+			print ReadDictResults[1][0] + "\t" + str("%.2f" % (float(ReadDictResults[2][1]) / nReads * 100)) + "%\t" + str(ReadDictResults[2][1])
 		else:
-			print "Can not find any genotype."
+			print "未找到任何分型\t-"
 	else:
-		print "Total Reads <= ", readCut, ", results may be inaccurate."
+		print "未达分型阈值，未找到任何分型\t-"
 
 
 if __name__ == "__main__":
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 		prog="HBV_typing.py",
 		usage="python HBV_typing.py -i <blast output> -c <cut off>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.2 20190627")
+		version="Version 0.3 20190813")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the blast result file")
 	parser.add_argument("-c", "--cutoff", type=int,
