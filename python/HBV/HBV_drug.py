@@ -82,6 +82,18 @@ def ChangeAnimo(vcfFile, reference, depthCutOff):
 def drugLocation(seq, drugDB):
 	drug = open(drugDB, "r")
 
+	locateDict = {}
+	for line in drug:
+		if line.startswith("#"):
+			continue
+		else:
+			l = line.split("\t")
+			loca = int(l[0])
+			locateDict[loca] = "未突变"
+
+	drug.close()
+
+	drug = open(drugDB, "r")
 	res_drug = set()
 	for line in drug:
 		if line.startswith("#"):
@@ -91,30 +103,39 @@ def drugLocation(seq, drugDB):
 			loca = int(l[0])
 			ref = l[1]
 			alt = l[2]
-			drugs = l[3].split("\n")[0]
+			drugs = l[3]
 
 			if seq[loca-1] == alt:
 				res_drug.add(drugs)
-				print (ref + str(loca) + alt), drugs
+				locateDict[loca] = ref + str(loca) + alt
 
 	drug.close()
-	return res_drug
+	return res_drug, locateDict
 
-def main(inputVcf, reference, drugDB, depth):
+def main(inputVcf, reference, drugDB, depth, method):
 	changeSeq = ChangeAnimo(inputVcf, reference, depth)
-	drugFind = drugLocation(changeSeq, drugDB)
+	drugFind = drugLocation(changeSeq, drugDB)[0]
+	changeList = drugLocation(changeSeq, drugDB)[1]
 	
-	if len(drugFind) > 0:
-		print "耐药： ", ",".join(list(drugFind))
+	if method == "drug":
+		if len(drugFind) > 0:
+			print "，".join(list(drugFind))
+		else:
+			print "未发现耐药突变"
+
+	elif method == "list":
+		for i in sorted(changeList.keys()):
+			print changeList[i]
+
 	else:
-		print "未发现耐药突变"
+		print "wrong method, please use 'drug' or 'list'."
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="HBV Drug @PZW",
 		prog="HBV_drug.py",
-		usage="python HBV_drug.py -i <inputVcf> -c <cutoff> -r <reference> -d <drug database>")
+		usage="python HBV_drug.py -i <inputVcf> -c <cutoff> -r <reference> -d <drug database> -m <method>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.2 20190627")
+		version="Version 0.3 20190813")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the bcftools result file")
 	parser.add_argument("-c", "--cutoff", type=int,
@@ -123,8 +144,10 @@ if __name__ == "__main__":
 		help="reference file")
 	parser.add_argument("-d", "--drug", type=str,
 		help="drug database")
+	parser.add_argument("-m", "--method", type=str,
+		help="list: output change list, drug: output drug", default="drug")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(inputVcf=args.input, reference=args.reference, drugDB=args.drug, depth=args.cutoff)
+	main(inputVcf=args.input, reference=args.reference, drugDB=args.drug, depth=args.cutoff, method=args.method)
