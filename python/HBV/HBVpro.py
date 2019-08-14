@@ -88,7 +88,7 @@ def bowtie2mapping2(fastq1, ids, outputDir):
 
 def blastResults(inputBam, outputDir, ids):
 	now = getAbsPath()
-	blastdb = now + "/reference/HBV36.fasta"
+	blastdb = now + "/reference/HBV48.fasta"
 	typing = now + "/function/HBV_typing.py"
 	cmd = """
 		bedtools bamtofastq -i {inputBam} -fq {outputDir}/{ids}.fastq
@@ -165,9 +165,17 @@ def fillReportDict(samplefile, ids, drugFile, drugListFile, typeFile):
 		else:
 			fillDict["#[BOOLDRUG]#"] = ""
 			drugs = line.split("\n")[0]
-			fillDict["#[DRUGAMOUNT]#"] = str(len(drugs.split("，")))
 			fillDict["#[FILLSUPP]#"] = "，可能对以下药物耐药："
 			fillDict["#[DRUGS]#"] = drugs
+
+			drugAAchangeAmount = 0
+			drugAAchangeAmountFile = open(drugListFile, "r")
+			for l in drugAAchangeAmountFile:
+				if "未突变" in l:
+					continue
+				else:
+					drugAAchangeAmount += 1
+			fillDict["#[DRUGAMOUNT]#"] = str(drugAAchangeAmount) + "个"
 	drug.close()
 
 	fillDict["#[TABLE-drug]#"] = drugListFile
