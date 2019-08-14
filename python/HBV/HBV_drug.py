@@ -99,7 +99,7 @@ def drugLocation(seq, drugDB):
 		if line.startswith("#"):
 			continue
 		else:
-			l = line.split("\t")
+			l = line.split("\n")[0].split("\t")
 			loca = int(l[0])
 			ref = l[1]
 			alt = l[2]
