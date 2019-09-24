@@ -107,7 +107,7 @@ def drugLocation(seq, drugDB):
 
 			if seq[loca-1] == alt:
 				res_drug.add(drugs)
-				locateDict[loca] = ref + str(loca) + alt
+				locateDict[loca] = "rt" + ref + str(loca) + alt
 
 	drug.close()
 	return res_drug, locateDict
