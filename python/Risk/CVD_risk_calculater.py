@@ -1,8 +1,6 @@
 # pzw
 # 20190927
 
-# ref:https://patentimages.storage.googleapis.com/53/65/15/9206f2bc087a78/CN107256323A.pdf
-
 results = {
 	"chr1:11854476": "AA",
 	"chr1:11856378": "CC",
