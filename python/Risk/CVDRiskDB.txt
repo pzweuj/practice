@@ -1,0 +1,7 @@
+# CVD
+# 0.02723
+# name	chrom	pos	ref	alt	OR	p
+rs1801131	chr1	11854476	A	C	2.1	0.05
+rs1801133	chr1	11856378	C	T	3.5	0.09
+rs1800595	chr1	169510348	G	A	1.8	0.11
+rs6025	chr1	169519049	G	A	2.1	0.02
