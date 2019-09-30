@@ -61,7 +61,8 @@ def VariantCall(sample, outputDir):
 		samtools index {outputDir}/bam/{sample}.target.bam
 		gatk HaplotypeCaller -R /home/zhaowen/workspace/database/human/hg19.fa \\
 			-I {outputDir}/bam/{sample}.target.bam \\
-			-O {outputDir}/vcf/{sample}.vcf
+			-O {outputDir}/vcf/{sample}.vcf \\
+			--native-pair-hmm-threads 8
 	""".format(sample=sample, outputDir=outputDir)
 	os.system(cmd)
 
