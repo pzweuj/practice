@@ -406,7 +406,7 @@ def PrintOutResults(sample, outputDir):
 	QCFile.close()
 
 	# coverage
-	coverFile = open(outputDir+"/results"+sample+".coverage.txt", "w")
+	coverFile = open(outputDir+"/results/"+sample+".coverage.txt", "w")
 	coverFile.write("\t".join(["Gene", "Chr", "Start", "End", "Length", "Average_Depth", "Coverage", "Coverage_10X", "Coverage_30X", "Coverage_100X"]) + "\n")
 	covStat = geneCov(sample, outputDir)
 	for i in covStat.keys():
@@ -422,7 +422,7 @@ def PrintOutResults(sample, outputDir):
 	os.system(cmd)
 
 	# SV
-	svFile = open(outputDir+"/results"+sample+".sv.txt", "w")
+	svFile = open(outputDir+"/results/"+sample+".sv.txt", "w")
 	svStat = svInfo(sample, outputDir)
 	svFile.write("\t".join(["Chromosome1", "Pos1", "Strand1", "Chromosome2", "Pos2", "Strand2", "svType", "GQ", "ReadsCounts"]) + "\n")
 	for i in svStat.keys():
