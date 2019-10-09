@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190618
+# 20190531
 
 import sys
 import os
@@ -124,10 +124,10 @@ def main(inputFile, outputChr, outputFile):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="analysis bedtools output",
 		prog="bedtools2qc.py",
-		usage="python bedtools2qc.py -i <bedtools.output> [-o <results> -chr <chromosome>]")
+		usage="python bedtools2qc.py -i <bedtools.output> -o <results>")
 	group = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.7 20190618")
+		version="Version 1.6 20190531")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the file which output from 'bedtools genomecov -ibam bam -bga'")
 	group.add_argument("-o", "--output", type=str,
