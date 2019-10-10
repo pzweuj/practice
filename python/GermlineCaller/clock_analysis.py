@@ -384,7 +384,7 @@ def PrintOutResults(sample, outputDir):
 	QCFile = open(outputDir+"/results/"+sample+".QC.txt", "w")
 	QCStat = QCreport(sample, outputDir)
 	qcOutput = [
-		"WGS4",
+		sample,
 		"rawReads",
 		"rawBases",
 		"cleanDataGC",
