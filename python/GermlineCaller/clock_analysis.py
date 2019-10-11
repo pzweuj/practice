@@ -105,15 +105,6 @@ def sv_detect(sample, outputDir):
 	""".format(sample=sample, outputDir=outputDir)
 	os.system(cmd)
 
-def jsonFileEx(sample, outputDir):
-	jsonFile = json.load(outputDir + "/QC/" + sample + ".json")
-	rawReads = jsonFile["summary"]["before_filtering"]["total_reads"]
-	rawBases = jsonFile["summary"]["before_filtering"]["total_bases"]
-	gcContent = jsonFile["summary"]["before_filtering"]["gc_content"]
-	cleanBasesQ20 = jsonFile["summary"]["after_filtering"]["q20_bases"]
-	cleanBasesQ30 = jsonFile["summary"]["after_filtering"]["q30_bases"]
-	return [rawReads, rawBases, gcContent, cleanBasesQ20, cleanBasesQ30]
-
 def ReadsOnTarget(sample, outputDir):
 	countFile = open(outputDir + "/bed/" + sample + ".read.txt")
 	for line in countFile:
