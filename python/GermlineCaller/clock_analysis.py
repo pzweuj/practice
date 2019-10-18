@@ -105,13 +105,22 @@ def sv_detect(sample, outputDir):
 	""".format(sample=sample, outputDir=outputDir)
 	os.system(cmd)
 
-def ReadsOnTarget(sample, outputDir):
-	countFile = open(outputDir + "/bed/" + sample + ".read.txt")
-	for line in countFile:
-		if line != "":
-			targetReads = int(line.split("\n")[0])
-	countFile.close()
-	return targetReads
+def jsonFileEx(sample, outputDir):
+	jsonFile = json.load(outputDir + "/QC/" + sample + ".json")
+	rawReads = jsonFile["summary"]["before_filtering"]["total_reads"]
+	rawBases = jsonFile["summary"]["before_filtering"]["total_bases"]
+	gcContent = jsonFile["summary"]["before_filtering"]["gc_content"]
+	cleanBasesQ20 = jsonFile["summary"]["after_filtering"]["q20_bases"]
+	cleanBasesQ30 = jsonFile["summary"]["after_filtering"]["q30_bases"]
+	return [rawReads, rawBases, gcContent, cleanBasesQ20, cleanBasesQ30]
+
+# def ReadsOnTarget(sample, outputDir):
+# 	countFile = open(outputDir + "/bed/" + sample + ".read.txt")
+# 	for line in countFile:
+# 		if line != "":
+# 			targetReads = int(line.split("\n")[0])
+# 	countFile.close()
+# 	return targetReads
 
 def QCreport(sample, outputDir):
 
@@ -131,7 +140,7 @@ def QCreport(sample, outputDir):
 	for line in open(outputDir+"/bed/"+sample+".read.txt", "r"):
 		targetReads = int(line)
 
-	OnTargetReadsPer = str("%.2f" % (float(targetReads) / float(cleanReads))) + "%"
+	OnTargetReadsPer = str("%.2f" % ((float(targetReads) / float(cleanReads)) * 100)) + "%"
 
 	covData = open(outputDir+"/bed/"+sample+".txt", "r")
 	OnTargetBases = 0
@@ -145,8 +154,8 @@ def QCreport(sample, outputDir):
 		start = isplit[1]
 		end = isplit[2]
 		cov = isplit[3]
-		OnTargetBases += int(cov)
 		bedLength += int(end) - int(start)
+		OnTargetBases += (int(cov) * (int(end) - int(start)))
 
 		if int(cov) > 0:
 			covBases += int(end) - int(start)
@@ -161,7 +170,7 @@ def QCreport(sample, outputDir):
 			covBases100 += int(end) - int(start)
 
 
-	OnTargetBasesPer = str("%.5f" % (float(OnTargetBases) / float(cleanBases))) + "%"
+	OnTargetBasesPer = str("%.2f" % ((float(OnTargetBases) / float(cleanBases)) * 100)) + "%"
 
 	averageDepth = float(OnTargetBases) / float(bedLength)
 
@@ -174,6 +183,8 @@ def QCreport(sample, outputDir):
 		sample,
 		str(rawReads),
 		rawBases,
+		str(cleanReads),
+		str(cleanBases),
 		str(cleanGC),
 		cleanQ20,
 		cleanQ30,
@@ -216,7 +227,7 @@ def geneCov(sample, outputDir):
 
 				length += int(end) - int(start)
 
-				TargetBases += int(cov)
+				TargetBases += (int(cov) * (int(end) - int(start)))
 
 				if int(cov) > 0:
 					covLength += int(end) - int(start)
@@ -342,7 +353,7 @@ def svInfo(sample, outputDir):
 						chrom2 = lines[0]
 						breakpoint2 = lines[1]
 						strand2 = infosDetails[1].split("=")[1][1]
-						svType = combineInfo.replace("N", chrom1+":"+breakpoint1)
+						svType = combineInfo.replace("N", chrom2+":"+breakpoint2)
 						chrom1 = combineInfo.split("[")[1].split(":")[0]
 						breakpoint1 = combineInfo.split("[")[1].split(":")[1]
 						strand1 = infosDetails[1].split("=")[1][0]
@@ -353,7 +364,7 @@ def svInfo(sample, outputDir):
 						chrom2 = lines[0]
 						breakpoint2 = lines[1]
 						strand2 = infosDetails[1].split("=")[1][1]
-						svType = combineInfo.replace("N", chrom1+":"+breakpoint1)
+						svType = combineInfo.replace("N", chrom2+":"+breakpoint2)
 						chrom1 = combineInfo.split("]")[1].split(":")[0]
 						breakpoint1 = combineInfo.split("]")[1].split(":")[1]
 						strand1 = infosDetails[1].split("=")[1][0]
@@ -375,9 +386,11 @@ def PrintOutResults(sample, outputDir):
 	QCFile = open(outputDir+"/results/"+sample+".QC.txt", "w")
 	QCStat = QCreport(sample, outputDir)
 	qcOutput = [
-		sample,
+		"SampleID",
 		"rawReads",
 		"rawBases",
+		"cleanReads",
+		"cleanBases",
 		"cleanDataGC",
 		"cleanData_Bases_Q20",
 		"cleanData_Bases_Q30",
