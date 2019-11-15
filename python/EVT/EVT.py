@@ -1,13 +1,15 @@
 # coding=utf-8
 # EVT pipeline
 # pzw
-# 20190923
+# 20191114
 
 import os
 import sys
 import bamnostic
 from collections import Counter
 import argparse
+import json
+import commands
 
 def filter(sample, rawdata, directory):
 	cmd = """
@@ -20,12 +22,32 @@ def filter(sample, rawdata, directory):
 	""".format(sample=sample, rawdata=rawdata, directory=directory)
 	os.system(cmd)
 
+def mapToHost(sample, directory):
+	cmd = """
+		mkdir -p {directory}/filter
+		bwa mem -t 8 /home/zhaowen/workspace/database/human/hg19.fa \\
+			{directory}/cleandata/{sample}_1.fq.gz \\
+			{directory}/cleandata/{sample}_2.fq.gz \\
+			> {directory}/filter/{sample}.host.sam
+		samtools view {directory}/filter/{sample}.host.sam -F 2052 | wc -l > {directory}/filter/{sample}.hostCount.txt
+		samtools view -bSh {directory}/filter/{sample}.host.sam -f 12 -F 256 > {directory}/filter/{sample}.nohost.bam
+		rm {directory}/filter/{sample}.host.sam
+		samtools sort -n {directory}/filter/{sample}.nohost.bam -@ 8 -o {directory}/filter/{sample}.nohost.sorted.bam
+		bedtools bamtofastq -i {directory}/filter/{sample}.nohost.sorted.bam \\
+			-fq {directory}/filter/{sample}.rmhost_1.fastq \\
+			-fq2 {directory}/filter/{sample}.rmhost_2.fastq
+		gzip {directory}/filter/{sample}.rmhost_1.fastq
+		gzip {directory}/filter/{sample}.rmhost_2.fastq
+	""".format(sample=sample, directory=directory)
+	os.system(cmd)
+
+
 def mapping(sample, directory):
 	cmd = """
 		mkdir -p {directory}/bam
-		bwa mem -t 8 /home2/zhaowen/project/EVTpro/reference/EVTREF_VP.fa \\
-			{directory}/cleandata/{sample}_1.fq.gz \\
-			{directory}/cleandata/{sample}_2.fq.gz \\
+		bwa mem -t 8 /home/zhaowen/workspace/database/EVT/EVTREF_VP.fa \\
+			{directory}/filter/{sample}.rmhost_1.fastq.gz \\
+			{directory}/filter/{sample}.rmhost_2.fastq.gz \\
 			| samtools view -bSh - | samtools sort -@ 8 - -o {directory}/bam/{sample}.bam
 		samtools view {directory}/bam/{sample}.bam -H > {directory}/bam/{sample}.header
 		samtools view {directory}/bam/{sample}.bam -F 2052 -bSh > {directory}/bam/{sample}.temp.bam
@@ -61,13 +83,25 @@ def typingStat(sample, directory, baseCover):
 	output = sorted(outputDict.items(), key=lambda d: d[1])
 	return output
 
+
 def main(sample, rawdata, directory, baseCover):
 	filter(sample, rawdata, directory)
+	mapToHost(sample, directory)
 	mapping(sample, directory)
 	results = typingStat(sample, directory, baseCover)
+
+	cmd = """
+		mkdir {directory}/results
+	""".format(directory=directory)
+	os.system(cmd)
+
+	resultsFile = open(directory + "/results/" + sample + ".type.txt", "w")
+
 	print "#type\tcounts"
+	resultsFile.write("#type\tcounts\n")
 	for i in results:
 		print i[0] + "\t" + str(i[1])
+		resultsFile.write(i[0] + "\t" + str(i[1]) + "\n")
 
 
 if __name__ == "__main__":
@@ -75,7 +109,7 @@ if __name__ == "__main__":
 		prog="EVT.py",
 		usage="python EVT.py -i <sampleID> -d <RawData Directory> -o <output Directory> -c <cut off>")
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.1 20190923")
+		version="Version 0.2 20191114")
 	parser.add_argument("-i", "--input", type=str,
 		help="Input the sample ID")
 	parser.add_argument("-d", "--dir", type=str,
