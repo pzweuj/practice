@@ -27,7 +27,8 @@ def BaseChange(vcfFile):
 			ref = lineAfterSplit[3]
 			alt = lineAfterSplit[4]
 			DP = lineAfterSplit[7].split("DP=")[1].split(";")[0]
-			baseChange[pos] = [alt, DP]
+			baseChange[pos] = [ref, alt, DP]
+
 	vcf.close()
 	return baseChange
 
@@ -65,7 +66,7 @@ def translate(seq):
 	return protein
 
 # 获得变异后氨基酸序列
-def ChangeAnimo(vcfFile, reference, depthCutOff):
+def ChangeAnimo(vcfFile, reference, depthCutOff, skipIns):
 
 	baseSeq = []
 	for i in getRefSeq(reference):
@@ -75,18 +76,26 @@ def ChangeAnimo(vcfFile, reference, depthCutOff):
 
 	for p in baseChange.keys():
 		if int(baseChange[p][1]) >= depthCutOff:
-			baseSeq[int(p)-1] = baseChange[p][0]
+			if skipIns:
+				if len(baseChange[p][1]) > 1:
+					continue
+				elif len(baseChange[p][0]) > 1:
+					continue
+				else:
+					baseSeq[int(p)-1] = baseChange[p][1]
+			else:
+				baseSeq[int(p)-1] = baseChange[p][1]
 
 	changeSeq = "".join(baseSeq)
 	changeAnimo = translate(changeSeq)
 
-	return changeAnimo
+	return changeSeq, changeAnimo
 
 # 获得变异氨基酸位点
-def changeLocation(vcfFile, fasta, depthCutOff):
+def changeLocation(vcfFile, fasta, depthCutOff, skipIns):
 
 	seq = translate(getRefSeq(fasta))
-	changeSeq = ChangeAnimo(vcfFile, fasta, depthCutOff)
+	changeSeq = ChangeAnimo(vcfFile, fasta, depthCutOff, skipIns)[1]
 
 	changeLocationDict = {}
 	for i in range(len(seq)):
@@ -97,9 +106,9 @@ def changeLocation(vcfFile, fasta, depthCutOff):
 	return changeLocationDict
 
 # 获得表格结果和药物结果
-def drugLocation(vcfFile, fasta, depthCutOff, drugDB):
+def drugLocation(vcfFile, fasta, depthCutOff, drugDB, skipIns):
 	drug = open(drugDB, "r")
-	changLoc = changeLocation(vcfFile, fasta, depthCutOff)
+	changLoc = changeLocation(vcfFile, fasta, depthCutOff, skipIns)
 
 	drugList = []
 	outputList = []
@@ -145,9 +154,10 @@ def drugLocation(vcfFile, fasta, depthCutOff, drugDB):
 	return drugList, outputList
 	
 
-def main(inputVcf, reference, drugDB, depth, method):
-	drugFind = drugLocation(inputVcf, reference, depth, drugDB)[0]
-	changeList = drugLocation(inputVcf, reference, depth, drugDB)[1]
+def main(inputVcf, reference, drugDB, depth, method, skipIns):
+	drugFind = drugLocation(inputVcf, reference, depth, drugDB, skipIns)[0]
+	changeList = drugLocation(inputVcf, reference, depth, drugDB, skipIns)[1]
+	changeSeq = ChangeAnimo(inputVcf, reference, depth, skipIns)[0]
 	
 	if method == "drug":
 		if len(drugFind) > 0:
@@ -158,6 +168,10 @@ def main(inputVcf, reference, drugDB, depth, method):
 	elif method == "list":
 		for i in changeList:
 			print i
+
+	elif method == "seq":
+		# S gene sequence
+		print changeSeq[25:706]
 
 	else:
 		print "wrong method, please use 'drug' or 'list'."
@@ -177,9 +191,11 @@ if __name__ == "__main__":
 	parser.add_argument("-d", "--drug", type=str,
 		help="drug database")
 	parser.add_argument("-m", "--method", type=str,
-		help="list: output change list, drug: output drug", default="drug")
+		help="list: output change list, drug: output drug, seq: output RT region", default="drug")
+	parser.add_argument("-s", "--skip", type=bool,
+		help="skip insertion", default=False)
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(inputVcf=args.input, reference=args.reference, drugDB=args.drug, depth=args.cutoff, method=args.method)
+	main(inputVcf=args.input, reference=args.reference, drugDB=args.drug, depth=args.cutoff, method=args.method, skipIns=args.skip)

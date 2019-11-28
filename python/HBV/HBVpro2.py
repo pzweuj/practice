@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20190812
+# 20191127
 
 import sys
 import os
@@ -105,7 +105,7 @@ def blastResults(inputBam, outputDir, ids, cutoff):
 	""".format(inputBam=inputBam, outputDir=outputDir, ids=ids, blastdb=blastdb, typing=typing, cutoff=cutoff)
 	os.system(cmd)
 
-def drugVcf(inputBam, outputDir, ids, cutoff):
+def drugVcf(inputBam, outputDir, ids, cutoff, skipIns):
 	now = getAbsPath()
 	reference = now + "/reference/HBVRT.fasta"
 	drug = now + "/function/HBV_drug2.py"
@@ -113,13 +113,22 @@ def drugVcf(inputBam, outputDir, ids, cutoff):
 
 	# 深度阈值，只有超过这个深度才认为是真实突变
 	# cutoff = "200"
-	
-	cmd = """
-		bcftools mpileup -f {reference} {inputBam} | bcftools call -mv -O v -o {outputDir}/{ids}.vcf
-		python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} > {outputDir}/{ids}.drug.txt
-		python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -m list > {outputDir}/{ids}.drug.list.txt
-	""".format(reference=reference, inputBam=inputBam, outputDir=outputDir, ids=ids, drug=drug, drugDB=drugDB, cutoff=cutoff)
-	os.system(cmd)
+	if skipIns:
+		cmd = """
+			bcftools mpileup -f {reference} {inputBam} | bcftools call -mv -O v -o {outputDir}/{ids}.vcf
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -s True > {outputDir}/{ids}.drug.txt
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -m list -s True > {outputDir}/{ids}.drug.list.txt
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -m seq -s True > {outputDir}/{ids}.S.txt
+		""".format(reference=reference, inputBam=inputBam, outputDir=outputDir, ids=ids, drug=drug, drugDB=drugDB, cutoff=cutoff)
+		os.system(cmd)
+	else:
+		cmd = """
+			bcftools mpileup -f {reference} {inputBam} | bcftools call -mv -O v -o {outputDir}/{ids}.vcf
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} > {outputDir}/{ids}.drug.txt
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -m list > {outputDir}/{ids}.drug.list.txt
+			python2 {drug} -i {outputDir}/{ids}.vcf -c {cutoff} -r {reference} -d {drugDB} -m seq > {outputDir}/{ids}.S.txt
+		""".format(reference=reference, inputBam=inputBam, outputDir=outputDir, ids=ids, drug=drug, drugDB=drugDB, cutoff=cutoff)
+		os.system(cmd)
 
 
 def fillReportDict(samplefile, ids, drugFile, drugListFile, typeFile):
@@ -189,7 +198,7 @@ def fillReportDict(samplefile, ids, drugFile, drugListFile, typeFile):
 	fillDict["#[TABLE-drug]#"] = drugListFile
 	return fillDict
 
-def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, ampCheck, vcfCutoff, readCutOff):
+def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, ampCheck, vcfCutoff, readCutOff, skipIns):
 
 
 	sampleDictionary = sampleinfo(sampleinfoFile)
@@ -234,7 +243,7 @@ def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, ampCheck, vcfCutoff, re
 	blastResults(bamfile, fillTemp, ids, readCutOff)
 
 	print (ids + " [calling]")
-	drugVcf(bamfile, fillTemp, ids, vcfCutoff)
+	drugVcf(bamfile, fillTemp, ids, vcfCutoff, skipIns)
 
 	print (ids + " [analysis]")
 	drugFile = fillTemp + "/" + ids + ".drug.txt"
@@ -256,11 +265,11 @@ if __name__ == "__main__":
 		formatter_class=argparse.RawTextHelpFormatter
 	)
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 1.2 20191122")
+		version="Version 2.0 20191127")
 	parser.add_argument("-s", "--sampleinfo", type=str,
-		help="Input the sampleinfo file")
+		help="Input the sampleinfo file", default=getAbsPath() + "/reference/HBV.txt")
 	parser.add_argument("-i", "--ids", type=str,
-		help="Input the sample ID")
+		help="Input the sample ID", default="H00001")
 	parser.add_argument("-f1", "--fastq1", type=str,
 		help="Input _1_fastq.gz file")
 	parser.add_argument("-f2", "--fastq2", type=str,
@@ -273,8 +282,10 @@ if __name__ == "__main__":
 		help="vcf cutoff, default=20", default="20")
 	parser.add_argument("-r", "--readsCutoff", type=str,
 		help="reads cutoff, default=20", default="20")
+	parser.add_argument("-skip", "--skipins", type=bool,
+		help="skip Insertion, default=False", default=False)
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(sampleinfoFile=args.sampleinfo, ids=args.ids, fastq1=args.fastq1, fastq2=args.fastq2, outputDir=args.output, ampCheck=args.check, vcfCutoff=args.vcfCutoff, readCutOff=args.readsCutoff)
+	main(sampleinfoFile=args.sampleinfo, ids=args.ids, fastq1=args.fastq1, fastq2=args.fastq2, outputDir=args.output, ampCheck=args.check, vcfCutoff=args.vcfCutoff, readCutOff=args.readsCutoff, skipIns=args.skipins)
