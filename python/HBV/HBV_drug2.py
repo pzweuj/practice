@@ -75,7 +75,7 @@ def ChangeAnimo(vcfFile, reference, depthCutOff, skipIns):
 	baseChange = BaseChange(vcfFile)
 
 	for p in baseChange.keys():
-		if int(baseChange[p][1]) >= depthCutOff:
+		if int(baseChange[p][2]) >= depthCutOff:
 			if skipIns:
 				if len(baseChange[p][1]) > 1:
 					continue
