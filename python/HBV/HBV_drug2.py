@@ -170,7 +170,9 @@ def main(inputVcf, reference, drugDB, depth, method, skipIns):
 			print i
 
 	elif method == "seq":
-		# S gene sequence
+		print ">RT_region"
+		print changeSeq
+		print ">S_gene"
 		print changeSeq[25:706]
 
 	else:
