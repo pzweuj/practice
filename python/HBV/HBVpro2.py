@@ -283,7 +283,7 @@ if __name__ == "__main__":
 	parser.add_argument("-r", "--readsCutoff", type=str,
 		help="reads cutoff, default=20", default="20")
 	parser.add_argument("-skip", "--skipins", type=bool,
-		help="skip Insertion, default=False", default=False)
+		help="skip indel, default=False", default=False)
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
