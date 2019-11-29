@@ -7,6 +7,7 @@ import os
 import function.WordWriter3 as ww
 import time
 import argparse
+from collections import Counter
 
 def getAbsPath():
 	now = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -89,7 +90,7 @@ def bowtie2mapping2(fastq1, ids, outputDir):
 def blastResults(inputBam, outputDir, ids, cutoff):
 	now = getAbsPath()
 	blastdb = now + "/reference/HBV48.fasta"
-	typing = now + "/function/HBV_typing.py"
+	typing = now + "/function/HBV_typing2.py"
 
 	# reads阈值，只有超过这个reads数才认为是检出阳性
 	# cutoff = "20"
@@ -98,12 +99,37 @@ def blastResults(inputBam, outputDir, ids, cutoff):
 		bedtools bamtofastq -i {inputBam} -fq {outputDir}/{ids}.fastq
 		cat {outputDir}/{ids}.fastq | paste - - - - | sed 's/^@/>/g' | cut -f1-2 | tr '\\t' '\\n' > {outputDir}/{ids}.fasta
 		rm {outputDir}/{ids}.fastq
-		blastn -query {outputDir}/{ids}.fasta -db {blastdb} -out {outputDir}/{ids}.blast.txt -num_threads 8
-		rm {outputDir}/{ids}.fasta
+	""".format(inputBam=inputBam, outputDir=outputDir, ids=ids)
+	os.system(cmd)
+
+	queryTemp = []
+	fastaFix = open(outputDir + "/" + ids + ".fasta", "r")
+	for line in fastaFix:
+		if line.startswith(">"):
+			continue
+		else:
+			queryTemp.append(line)
+	queryDict = Counter(queryTemp)
+	fastaFixed = open(outputDir + "/" + ids + ".fix.fasta", "w")
+	uniqueDict = {}
+	n = 1
+	for i in queryDict.keys():
+		counts = queryDict[i]
+		readID = ">uniqueID_" + str(n) + "_counts_" + str(counts)
+		uniqueDict[readID] = counts
+		n += 1
+		fastaFixed.write(readID + "\n")
+		fastaFixed.write(i)
+	fastaFixed.close()
+	fastaFix.close()
+
+	cmd2 = """
+		blastn -query {outputDir}/{ids}.fix.fasta -db {blastdb} -out {outputDir}/{ids}.blast.txt -num_threads 8
+		rm {outputDir}/{ids}.fasta {outputDir}/{ids}.fix.fasta
 		python2 {typing} -i {outputDir}/{ids}.blast.txt -c {cutoff} > {outputDir}/{ids}.typingResults.txt
 		rm {outputDir}/{ids}.blast.txt
 	""".format(inputBam=inputBam, outputDir=outputDir, ids=ids, blastdb=blastdb, typing=typing, cutoff=cutoff)
-	os.system(cmd)
+	os.system(cmd2)
 
 def drugVcf(inputBam, outputDir, ids, cutoff, skipIns):
 	now = getAbsPath()
@@ -198,7 +224,7 @@ def fillReportDict(samplefile, ids, drugFile, drugListFile, typeFile):
 	fillDict["#[TABLE-drug]#"] = drugListFile
 	return fillDict
 
-def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, ampCheck, vcfCutoff, readCutOff, skipIns):
+def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, vcfCutoff, readCutOff, skipIns):
 
 
 	sampleDictionary = sampleinfo(sampleinfoFile)
@@ -225,17 +251,6 @@ def main(sampleinfoFile, ids, fastq1, fastq2, outputDir, ampCheck, vcfCutoff, re
 		bowtie2mapping2(cleanfq1, ids, outputDir + "/" + ids + "/bam")
 	else:
 		bowtie2mapping(cleanfq1, cleanfq2, ids, outputDir + "/" + ids + "/bam")
-
-	if ampCheck:
-		print (ids + " [amplicon calculations]")
-		now = getAbsPath()
-		checkScript = now + "/function/HBV_capture.py"
-		checkCmd = """
-			python2 {checkScript} -s {ids} -o {outputDir}/{ids}/amplicon \\
-				-b {outputDir}/{ids}/bam/{ids}.bam \\
-				-f1 {fastq1} -f2 {fastq2}
-		""".format(checkScript=checkScript, ids=ids, outputDir=outputDir, fastq1=fastq1, fastq2=fastq2)
-		os.system(checkCmd)
 
 	print (ids + " [blast]")
 	fillTemp = outputDir + "/" + ids + "/fillUp"
@@ -276,8 +291,6 @@ if __name__ == "__main__":
 		help="Input _2_fastq.gz file", default="single")
 	parser.add_argument("-o", "--output", type=str,
 		help="specify a output directory")
-	parser.add_argument("-c", "--check", type=bool,
-		help="check amplicon, default=False", default=False)
 	parser.add_argument("-vcf", "--vcfCutoff", type=str,
 		help="vcf cutoff, default=20", default="20")
 	parser.add_argument("-r", "--readsCutoff", type=str,
@@ -288,4 +301,4 @@ if __name__ == "__main__":
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(sampleinfoFile=args.sampleinfo, ids=args.ids, fastq1=args.fastq1, fastq2=args.fastq2, outputDir=args.output, ampCheck=args.check, vcfCutoff=args.vcfCutoff, readCutOff=args.readsCutoff, skipIns=args.skipins)
+	main(sampleinfoFile=args.sampleinfo, ids=args.ids, fastq1=args.fastq1, fastq2=args.fastq2, outputDir=args.output, vcfCutoff=args.vcfCutoff, readCutOff=args.readsCutoff, skipIns=args.skipins)
