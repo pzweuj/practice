@@ -1,6 +1,6 @@
 # coding:utf-8
 # pzw
-# 20200103
+# 20200107
 # AmpCap
 # amplicon capture analysis
 
@@ -98,6 +98,7 @@ def bamAnalysis(outputDir, sample, bedFile):
 	mappingReads = getMappingReads(outputDir, sample)
 
 	outputFile.write("# " + sample + "\n")
+	outputFile.write("# Panel\t" + bedFile + "\n")
 	outputFile.write("rawReads\t" + str(rawReads) + "\n")
 	outputFile.write("rawBases\t" + str(rawBases) + "\n")
 	outputFile.write("cleanReads\t" + str(cleanReads) + "\n")
@@ -146,8 +147,10 @@ def bamAnalysis(outputDir, sample, bedFile):
 			uniform = "yes"
 		else:
 			uniform = "no"
-
-		ReadPercent = "%.2f" % (float(i[5]) / depthSum) + "%"
+		if depthSum == 0:
+			ReadPercent = "0"
+		else:
+			ReadPercent = str(float(i[5]) / depthSum)
 		outputFile.write("\t".join(i) + "\t" + uniform + "\t" + ReadPercent + "\n")
 
 	outputFile.close()
@@ -173,7 +176,7 @@ if __name__ == "__main__":
 		formatter_class=argparse.RawTextHelpFormatter
 	)
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.1 20200106")
+		version="Version 0.2 20200107")
 	parser.add_argument("-i", "--rawdata", type=str,
 		help="Input the rawdata path")
 	parser.add_argument("-o", "--output", type=str,
