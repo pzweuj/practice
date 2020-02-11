@@ -21,7 +21,7 @@ def fastaDict(results):
 	resultsDict = {}
 	for line in resultsFile:
 		if line.startswith(">"):
-			name = line.replace(">", "").split("\n")[0]
+			name = line.replace(">", "").split("\n")[0].split(" | ")[1]
 			resultsDict[name] = ""
 		else:
 			resultsDict[name] += line.split("\n")[0]
