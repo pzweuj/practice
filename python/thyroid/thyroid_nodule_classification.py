@@ -37,8 +37,8 @@ def TrainingModel(arff, modelOutput):
 	loader = Loader(classname="weka.core.converters.ArffLoader")
 	train = loader.load_file(arff)
 	train.class_is_first()
-	# 使用BayesNet算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高
-	clsf = Classifier(classname="weka.classifiers.bayes.BayesNet")
+	# 使用RandomForest算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高
+	clsf = Classifier(classname="weka.classifiers.trees.使用RandomForest算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高")
 	clsf.build_classifier(train)
 	print(clsf)
 	# 建立模型
@@ -83,8 +83,8 @@ def TestClassification(arff, modelInput, results):
 	test.class_is_first()
 	# 分析结果
 	resultsFile = open(results, "w")
-	resultsFile.write("序号\t预测\t良性概率\t恶性概率\n")
-	print("序号\t预测\t良性概率\t恶性概率")
+	resultsFile.write("序号\t原判断\t预测\t良性概率\t恶性概率\n")
+	print("序号\t原判断\t预测\t良性概率\t恶性概率")
 	for index, inst in enumerate(test):
 		pred = clsf.classify_instance(inst)
 		dist = clsf.distribution_for_instance(inst)
@@ -94,8 +94,8 @@ def TestClassification(arff, modelInput, results):
 		sameAsOrigin = "yes" if pred != inst.get_value(inst.class_index) else "no"
 		NRate = dist.tolist()[0]
 		PRate = dist.tolist()[1]
-		resultsFile.write("%d\t%s\t%s\t%s" % (sampleID, prediction, str(NRate), str(PRate)) + "\n")
-		print("%d\t%s\t%s\t%s" % (sampleID, prediction, str(NRate), str(PRate)))
+		resultsFile.write("%d\t%s\t%s\t%s\t%s" % (sampleID, origin, prediction, str(NRate), str(PRate)) + "\n")
+		print("%d\t%s\t%s\t%s\t%s" % (sampleID, origin, prediction, str(NRate), str(PRate)))
 	resultsFile.close()
 	# 退出java虚拟机
 	jvm.stop()
