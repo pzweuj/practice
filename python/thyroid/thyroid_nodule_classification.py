@@ -30,7 +30,7 @@ def echo_data():
 	pass
 
 # Training Model 使用训练集生成训练矩阵
-def TrainingModel(arff, modelOutput):
+def TrainingModel(arff, modelOutput, clsfier):
 	# 启动java虚拟机
 	jvm.start()
 	# 导入训练集
@@ -38,7 +38,7 @@ def TrainingModel(arff, modelOutput):
 	train = loader.load_file(arff)
 	train.class_is_first()
 	# 使用RandomForest算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高
-	clsf = Classifier(classname="weka.classifiers.trees.使用RandomForest算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高")
+	clsf = Classifier(classname="weka.classifiers." + clsfier)
 	clsf.build_classifier(train)
 	print(clsf)
 	# 建立模型
@@ -101,9 +101,9 @@ def TestClassification(arff, modelInput, results):
 	jvm.stop()
 	print("检测完成")
 
-def main(arff, modelFile, results, method):
+def main(arff, modelFile, results, method, clsfier):
 	if method == "train":
-		TrainingModel(arff, modelFile)
+		TrainingModel(arff, modelFile, clsfier)
 	else:
 		print("if use train sets, please specify '-md train'")
 		TestClassification(arff, modelFile, results)
@@ -125,9 +125,11 @@ if __name__ == "__main__":
 		help="test sets prediction output", default="")
 	parser.add_argument("-md", "--method", type=str,
 		help="'-md train' switch to train process", default="no")
+	parser.add_argument("-c", "--classifier", type=str,
+		help="specify a classifier, default=tree.RandomForest", default="tree.RandomForest")
 
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(arff=args.arff, modelFile=args.model, results=args.output, method=args.method)
+	main(arff=args.arff, modelFile=args.model, results=args.output, method=args.method, clsfier=args.classifier)
