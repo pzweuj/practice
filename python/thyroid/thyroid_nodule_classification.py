@@ -38,7 +38,8 @@ def TrainingModel(arff, modelOutput, clsfier):
 	train = loader.load_file(arff)
 	train.class_is_first()
 	# 使用RandomForest算法进行训练，因为在GUI版本weka中使用多种方式训练后发现此方式TPR与TNR较高
-	clsf = Classifier(classname="weka.classifiers." + clsfier)
+	cls_name = "weka.classifiers." + clsfier
+	clsf = Classifier(classname=cls_name)
 	clsf.build_classifier(train)
 	print(clsf)
 	# 建立模型
@@ -60,6 +61,7 @@ def TrainingModel(arff, modelOutput, clsfier):
 	TNR = TN / (FP + TN)
 	PPV = TP / (TP + FP)
 	NPV = TN / (TN + FN)
+	print("算法： " + clsfier)
 	print("敏感度 TPR: " + str(TPR))
 	print("特异度 TNR: " + str(TNR))
 	print("PPV: " + str(PPV))
@@ -126,7 +128,7 @@ if __name__ == "__main__":
 	parser.add_argument("-md", "--method", type=str,
 		help="'-md train' switch to train process", default="no")
 	parser.add_argument("-c", "--classifier", type=str,
-		help="specify a classifier, default=tree.RandomForest", default="tree.RandomForest")
+		help="specify a classifier, default=trees.RandomForest", default="trees.RandomForest")
 
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
