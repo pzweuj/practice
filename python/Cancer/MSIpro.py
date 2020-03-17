@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20191015
+# 20200317
 
 import os
 import sys
@@ -9,55 +9,71 @@ import commands
 
 # 原始数据质控
 def filter(sample, rawdataDir, outputDir):
+	fastp = "fastp"
 	cmd = """
 		if [ ! -d "{outputDir}" ]; then
 			mkdir {outputDir}
 		fi
 		mkdir {outputDir}/cleandata
 		mkdir {outputDir}/QC
-		fastp -i {rawdataDir}/{sample}_R1.fastq.gz \\
-			-I {rawdataDir}/{sample}_R2.fastq.gz \\
+		{fastp} -i {rawdataDir}/{sample}_R1_001.fastq.gz \\
+			-I {rawdataDir}/{sample}_R2_001.fastq.gz \\
 			-o {outputDir}/cleandata/{sample}_1.fq.gz \\
 			-O {outputDir}/cleandata/{sample}_2.fq.gz \\
 			-w 8 -j {outputDir}/QC/{sample}.json \\
 			-h {outputDir}/QC/{sample}.html
-	""".format(sample=sample, rawdataDir=rawdataDir, outputDir=outputDir)
+	""".format(fastp=fastp, sample=sample, rawdataDir=rawdataDir, outputDir=outputDir)
 	os.system(cmd)
 
 # 比对
-def mapping(sample, outputDir):
+def mapping(sample, rawdataDir, outputDir, QC):
 	reference = "hg19.fa"
-	cmd = """
-		mkdir {outputDir}/bam
-		bwa mem -t 8 {reference} {outputDir}/cleandata/{sample}_1.fq.gz \\
-			{outputDir}/cleandata/{sample}_2.fq.gz \\
-			| samtools view -bSh - | samtools sort -@ 8 - -o {outputDir}/bam/{sample}.bam
-		samtools index {outputDir}/bam/{sample}.bam
-	""".format(reference=reference, outputDir=outputDir, sample=sample)
+	bwa = "bwa"
+	if QC == "yes":
+		cmd = """
+			mkdir {outputDir}/bam
+			{bwa} mem -t 8 {reference} {outputDir}/cleandata/{sample}_1.fq.gz \\
+				{outputDir}/cleandata/{sample}_2.fq.gz \\
+				| samtools view -bSh - | samtools sort -@ 8 - -o {outputDir}/bam/{sample}.bam
+			samtools index {outputDir}/bam/{sample}.bam
+		""".format(bwa=bwa, reference=reference, outputDir=outputDir, sample=sample)
+	else:
+		cmd = """
+			mkdir {outputDir}/bam
+			{bwa} mem -t 8 {reference} {rawdataDir}/{sample}_R1_001.fastq.gz \\
+				{rawdataDir}/{sample}_R2_001.fastq.gz \\
+				| samtools view -bSh - | samtools sort -@ 8 - -o {outputDir}/bam/{sample}.bam
+			samtools index {outputDir}/bam/{sample}.bam
+		""".format(bwa=bwa, reference=reference, rawdataDir=rawdataDir, outputDir=outputDir, sample=sample)
 	os.system(cmd)
 
 # 捕获分析
-def amplicon(sample, outputDir):
+def amplicon(sample, outputDir, panel):
 	bamdst = "bamdst"
-	bedFile = "hg19.msisensor.bed"
+	bedFile = "hg19.msi.bed"
+	if panel == "2":
+		bedFile = "hg19.msisensor.test.bed"
+	bedtools = "bedtools"
 	cmd = """
 		mkdir {outputDir}/amplicon
 		mkdir {outputDir}/amplicon/temp
 		{bamdst} -p {bedFile} -o {outputDir}/amplicon/temp {outputDir}/bam/{sample}.bam
 		zcat {outputDir}/amplicon/temp/region.tsv.gz \\
-			| bedtools intersect -a - -b {bedFile} -wb -header \\
+			| {bedtools} intersect -a - -b {bedFile} -wb -header \\
 			| awk 'BEGIN{{OFS="\t"}} {{print $1,$2,$3,$4,$5,$6,$7,$11}}' \\
 			| sed 's/Coverage/Coverage\tLoca/' > {outputDir}/amplicon/{sample}.amp.txt
 		rm -rf {outputDir}/amplicon/temp
-	""".format(sample=sample, outputDir=outputDir, bamdst=bamdst, bedFile=bedFile)
+	""".format(sample=sample, outputDir=outputDir, bedtools=bedtools, bamdst=bamdst, bedFile=bedFile)
 	os.system(cmd)
 
 # 单肿瘤样本分析
 ## msisensor
-def msisensor(sample, outputDir):
+def msisensor(sample, outputDir, panel):
 	msisensor = "msisensor"
 	msiList = "hg19.msi.list"
 	bedFile = "hg19.msisensor.bed"
+	if panel == "2":
+		bedFile = "hg19.msisensor.test.bed"
 	cmd = """
 		mkdir {outputDir}/msi
 		mkdir {outputDir}/msi/temp
@@ -71,7 +87,7 @@ def msisensor(sample, outputDir):
 ## msisensor2
 def msisensor2(sample, outputDir):
 	msisensor2 = "msisensor2"
-	msiModel = "models_hg19"
+	msiModel = "models_hg19_GRCh37"
 	cmd = """
 		mkdir {outputDir}/msi/temp
 		{msisensor2} msi -M {msiModel} -t {outputDir}/bam/{sample}.bam \\
@@ -82,10 +98,12 @@ def msisensor2(sample, outputDir):
 	os.system(cmd)
 
 # visualMSI
-def visualMSI(sample, outputDir):
+def visualMSI(sample, outputDir, panel):
 	visualMSI = "visualmsi"
 	reference = "hg19.fa"
 	bedFile = "hg19.visualmsi.bed"
+	if panel == "2":
+		bedFile = "hg19.visualmsi.test.bed"
 	cmd = """
 		mkdir {outputDir}/msi/temp
 		{visualMSI} -i {outputDir}/bam/{sample}.bam \\
@@ -95,17 +113,19 @@ def visualMSI(sample, outputDir):
 	""".format(visualMSI=visualMSI, sample=sample, outputDir=outputDir, reference=reference, bedFile=bedFile)
 	os.system(cmd)
 
-def tumorOnly(sample, outputDir):
-	msisensor(sample, outputDir)
+def tumorOnly(sample, outputDir, panel):
+	msisensor(sample, outputDir, panel)
 	msisensor2(sample, outputDir)
-	visualMSI(sample, outputDir)
+	visualMSI(sample, outputDir, panel)
 
 # 配对样本分析
 ## msisensor
-def msisensor_pair(sample1, sample2, outputDir):
+def msisensor_pair(sample1, sample2, outputDir, panel):
 	msisensor = "msisensor"
 	msiList = "hg19.msi.list"
 	bedFile = "hg19.msisensor.bed"
+	if panel == "2":
+		bedFile = "hg19.msisensor.test.bed"
 	cmd = """
 		if [ ! -d "{outputDir}/msi" ]; then
 			mkdir {outputDir}/msi
@@ -120,10 +140,12 @@ def msisensor_pair(sample1, sample2, outputDir):
 	os.system(cmd)
 
 ## visualMSI
-def visualMSI_pair(sample1, sample2, outputDir):
+def visualMSI_pair(sample1, sample2, outputDir, panel):
 	visualMSI = "visualmsi"
 	reference = "hg19.fa"
 	bedFile = "hg19.visualmsi.bed"
+	if panel == "2":
+		bedFile = "hg19.visualmsi.test.bed"
 	cmd = """
 		mkdir {outputDir}/msi/temp
 		{visualMSI} -i {outputDir}/bam/{sample1}.bam -n {outputDir}/bam/{sample2}.bam \\
@@ -134,9 +156,11 @@ def visualMSI_pair(sample1, sample2, outputDir):
 	os.system(cmd)
 
 ## mantis
-def mantis(sample1, sample2, outputDir):
+def mantis(sample1, sample2, outputDir, panel):
 	mantis = "mantis.py"
 	bedFile = "hg19.mantis.bed"
+	if panel == "2":
+		bedFile = "hg19.mantis.test.bed"
 	reference = "hg19.fa"
 	cmd = """
 		mkdir {outputDir}/msi/temp
@@ -149,14 +173,14 @@ def mantis(sample1, sample2, outputDir):
 	""".format(sample1=sample1, sample2=sample2, outputDir=outputDir, mantis=mantis, bedFile=bedFile, reference=reference)
 	os.system(cmd)
 
-def pairSample(tumorSample, normalSample, outputDir):
-	msisensor_pair(tumorSample, normalSample, outputDir)
-	visualMSI_pair(tumorSample, normalSample, outputDir)
-	mantis(tumorSample, normalSample, outputDir)
+def pairSample(tumorSample, normalSample, outputDir, panel):
+	msisensor_pair(tumorSample, normalSample, outputDir, panel)
+	visualMSI_pair(tumorSample, normalSample, outputDir, panel)
+	mantis(tumorSample, normalSample, outputDir, panel)
 
 
 # 主流程
-def main(sample1, sample2, rawdataDir, outputDir):
+def main(sample1, sample2, rawdataDir, outputDir, panel, QC):
 	cmd = """
 		if [ ! -d "{outputDir}/results" ]; then
 			mkdir -p {outputDir}/results
@@ -166,22 +190,22 @@ def main(sample1, sample2, rawdataDir, outputDir):
 
 	# 单样本模式
 	if sample2 == "none":
-		print "[filter] begin"
-		filter(sample1, rawdataDir, outputDir)
+		if QC == "yes":
+			print "[filter] begin"
+			filter(sample1, rawdataDir, outputDir)
 		print "[mapping] begin"
-		mapping(sample1, outputDir)
+		mapping(sample1, rawdataDir, outputDir, QC)
 		print "[amplicon] begin"
-		amplicon(sample1, outputDir)
+		amplicon(sample1, outputDir, panel)
 		print "[msi analysis] begin"
-		tumorOnly(sample1, outputDir)
+		tumorOnly(sample1, outputDir, panel)
 
 		results = open(outputDir + "/results/" + sample1 + ".txt", "w")
 		msisensorResults = open(outputDir + "/msi/" + sample1 + ".msisensor.txt", "r")
 		msisensor2Results = open(outputDir + "/msi/" + sample1 + ".msisensor2.txt", "r")
 		visualMSIResults = open(outputDir + "/msi/" + sample1 + ".visualmsi.txt", "r")
 
-		results.write("msisensor：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
+		results.write(sample1 + "\t及格位点总数\t不稳定位点数\t百分比\t结论\n")
 		for line in msisensorResults:
 			if line.startswith("Total"):
 				continue
@@ -191,24 +215,18 @@ def main(sample1, sample2, rawdataDir, outputDir):
 				unstable = lines[1]
 
 				if totalNumber == "0":
-					results.write("0\t0\t0\n")
-					results.write("msisensor: 数据质量不足判断\n")
+					results.write("msisensor\t0\t0\t0\t数据质量不足判断\n")
 				else:
 					percen = str(float(unstable) / float(totalNumber))
-					results.write("\t".join([totalNumber, unstable, percen]) + "\n")
+					results_o = "\t".join([str(totalNumber), str(unstable), percen])
 					if unstable == "0":
-						results.write("msisensor: MSS\n")
+						results.write("msisensor\t" + results_o + "\tMSS\n")
 					elif unstable == "1":
-						results.write("msisensor: MSI-L\n")
+						results.write("msisensor\t" + results_o + "\tMSI-L\n")
 					else:
-						results.write("msisensor: MSI-H\n")
+						results.write("msisensor\t" + results_o + "\tMSI-H\n")
 		msisensorResults.close()
 
-
-		results.write("\n")
-		results.write("\n")
-		results.write("msisensor2：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
 		for line in msisensor2Results:
 			if line.startswith("Total"):
 				continue
@@ -218,26 +236,20 @@ def main(sample1, sample2, rawdataDir, outputDir):
 				unstable = lines[1]
 
 				if totalNumber == "0":
-					results.write("0\t0\t0\n")
-					results.write("msisensor2: 数据质量不足判断\n")
+					results.write("msisensor2\t0\t0\t0\t数据质量不足判断\n")
 				else:
 					percen = str(float(unstable) / float(totalNumber))
-					results.write("\t".join([totalNumber, unstable, percen]) + "\n")
+					results_o = "\t".join([str(totalNumber), str(unstable), percen])
 					if unstable == "0":
-						results.write("msisensor2: MSS\n")
+						results.write("msisensor2\t" + results_o + "\tMSS\n")
 					elif unstable == "1":
-						results.write("msisensor2: MSI-L\n")
+						results.write("msisensor2\t" + results_o + "\tMSI-L\n")
 					else:
-						results.write("msisensor2: MSI-H\n")
+						results.write("msisensor2\t" + results_o + "\tMSI-H\n")
 		msisensor2Results.close()
 		
-		results.write("\n")
-		results.write("\n")
-		results.write("visualMSI：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
-
 		### ！！！！！！设定阈值！！！！！！
-		entropyCutOff = 3.2
+		entropyCutOff = 4.2
 		
 		unstableVisual = 0
 		locaVisual = 0
@@ -250,41 +262,40 @@ def main(sample1, sample2, rawdataDir, outputDir):
 				if "passed" in line:
 					locaVisual += 1
 		if locaVisual == 0:
-			results.write("0\t0\t0：\n")
-			results.write("visualMSI: 数据质量不足判断\n")
+			results.write("visualMSI\t0\t0\t0\t数据质量不足判断\n")
 		else:
 			percenVisual = str(float(unstableVisual) / float(locaVisual))
-			results.write("\t".join([str(locaVisual), str(unstableVisual), percenVisual]) + "\n")
+			results_o = "\t".join([str(locaVisual), str(unstableVisual), percenVisual])
 			if unstableVisual == 0:
-				results.write("visualMSI: MSS\n")
+				results.write("visualMSI\t" + results_o + "\tMSS\n")
 			elif unstableVisual == 1:
-				results.write("visualMSI: MSI-L\n")
+				results.write("visualMSI\t" + results_o + "\tMSI-L\n")
 			else:
-				results.write("visualMSI: MSI-H\n")
+				results.write("visualMSI\t" + results_o + "\tMSI-H\n")
 		visualMSIResults.close()
 		results.close()
 
 	# 配对样本模式
 	else:
-		print "[filter] begin"
-		filter(sample1, rawdataDir, outputDir)
-		filter(sample2, rawdataDir, outputDir)
+		if QC == "yes":
+			print "[filter] begin"
+			filter(sample1, rawdataDir, outputDir)
+			filter(sample2, rawdataDir, outputDir)
 		print "[mapping] begin"
-		mapping(sample1, outputDir)
-		mapping(sample2, outputDir)
+		mapping(sample1, rawdataDir, outputDir, QC)
+		mapping(sample2, rawdataDir, outputDir, QC)
 		print "[amplicon] begin"
-		amplicon(sample1, outputDir)
-		amplicon(sample2, outputDir)
+		amplicon(sample1, outputDir, panel)
+		amplicon(sample2, outputDir, panel)
 		print "[msi analysis] begin"
-		pairSample(sample1, sample2, outputDir)
+		pairSample(sample1, sample2, outputDir, panel)
 
 		results = open(outputDir + "/results/" + sample1 + "_" + sample2 + ".txt", "w")
 		msisensorResults = open(outputDir + "/msi/" + sample1 + "_" + sample2 + ".msisensor.txt", "r")
 		visualMSIResults = open(outputDir + "/msi/" + sample1 + "_" + sample2 + ".visualmsi.txt", "r")
 		mantisResults = open(outputDir + "/msi/" + sample1 + "_" + sample2 + ".mantis.txt", "r")
 
-		results.write("msisensor：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
+		results.write(sample1 + "_" + sample2 + "\t及格位点总数\t不稳定位点数\t百分比\t结论\n")
 		for line in msisensorResults:
 			if line.startswith("Total"):
 				continue
@@ -294,23 +305,17 @@ def main(sample1, sample2, rawdataDir, outputDir):
 				unstable = lines[1]
 
 				if totalNumber == "0":
-					results.write("0\t0\t0\n")
-					results.write("msisensor: 数据质量不足判断\n")
+					results.write("msisensor\t0\t0\t0\t数据质量不足判断\n")
 				else:
 					percen = str(float(unstable) / float(totalNumber))
-					results.write("\t".join([totalNumber, unstable, percen]) + "\n")
+					results_o = "\t".join([str(totalNumber), str(unstable), percen])
 					if unstable == "0":
-						results.write("msisensor: MSS\n")
+						results.write("msisensor\t" + results_o + "\tMSS\n")
 					elif unstable == "1":
-						results.write("msisensor: MSI-L\n")
+						results.write("msisensor\t" + results_o + "\tMSI-L\n")
 					else:
-						results.write("msisensor: MSI-H\n")
+						results.write("msisensor\t" + results_o + "\tMSI-H\n")
 		msisensorResults.close()
-
-		results.write("\n")
-		results.write("\n")
-		results.write("visualMSI：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
 
 		### ！！！！！！设定阈值！！！！！！
 		EmdCutOff = 1.0
@@ -326,23 +331,18 @@ def main(sample1, sample2, rawdataDir, outputDir):
 				if "passed" in line:
 					locaVisual += 1
 		if locaVisual == 0:
-			results.write("0\t0\t0：\n")
-			results.write("visualMSI: 数据质量不足判断\n")
+			results.write("visualMSI\t0\t0\t0\t数据质量不足判断\n")
 		else:
 			percenVisual = str(float(unstableVisual) / float(locaVisual))
-			results.write("\t".join([str(locaVisual), str(unstableVisual), percenVisual]) + "\n")
+			results_o = "\t".join([str(locaVisual), str(unstableVisual), percenVisual])
 			if unstableVisual == 0:
-				results.write("visualMSI: MSS\n")
+				results.write("visualMSI\t" + results_o + "\tMSS\n")
 			elif unstableVisual == 1:
-				results.write("visualMSI: MSI-L\n")
+				results.write("visualMSI\t" + results_o + "\tMSI-L\n")
 			else:
-				results.write("visualMSI: MSI-H\n")
+				results.write("visualMSI\t" + results_o + "\tMSI-H\n")
 		visualMSIResults.close()
 
-		results.write("\n")
-		results.write("\n")
-		results.write("mantis：\n")
-		results.write("及格位点总数\t不稳定位点数\t百分比：\n")
 
 		# !!!!!!! mantis 阈值 !!!!!!!!
 		differenceMantisCutOff = 0.40
@@ -366,30 +366,29 @@ def main(sample1, sample2, rawdataDir, outputDir):
 					if diff >= differenceMantisCutOff:
 						unstableMantis += 1
 		if locaMantis == 0:
-			results.write("0\t0\t0：\n")
-			results.write("mantis: 数据质量不足判断\n")
+			results.write("mantis\t0\t0\t0\t数据质量不足判断\n")
 		else:
 			percenMantis = str(float(unstableMantis) / float(locaMantis))
-			results.write("\t".join([str(locaMantis), str(unstableMantis), percenMantis]) + "\n")
+			results_o = "\t".join([str(locaMantis), str(unstableMantis), percenMantis])
 			if unstableMantis == 0:
-				results.write("mantis: MSS\n")
+				results.write("mantis\t" + results_o + "\tMSS\n")
 			elif unstableMantis == 1:
-				results.write("mantis: MSI-L\n")
+				results.write("mantis\t" + results_o + "\tMSI-L\n")
 			else:
-				results.write("mantis: MSI-H\n")
+				results.write("mantis\t" + results_o + "\tMSI-H\n")
 		mantisResults.close()
 		results.close()
 
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
-		description="MSI multiAnalysor",
+		description="MSI multiAnalysor PZW",
 		prog="MSIpro.py",
 		usage="python MSIpro.py [-h] -t <tumor sample id> [-n <normal sample id>] -r <rawdata directory> -o <output directory>",
 		formatter_class=argparse.RawTextHelpFormatter
 	)
 	parser.add_argument("-v", "--version", action="version",
-		version="Version 0.1 20191016")
+		version="Version 0.2 20200317")
 	parser.add_argument("-t", "--tumor", type=str,
 		help="Input the tumor sample id")
 	parser.add_argument("-n", "--normal", type=str,
@@ -398,8 +397,12 @@ if __name__ == "__main__":
 		help="rawdata directory path")
 	parser.add_argument("-o", "--output", type=str,
 		help="output directory path")
+	parser.add_argument("-p", "--panel", type=str,
+		help="specify a panel, default = '1' refer to '8 loca panel' and select '2' for '9 loca panel'", default="1")
+	parser.add_argument("-q", "--QC", type=str,
+		help="do QC, default is 'yes', use '-q no' to skip QC", default="yes")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(sample1=args.tumor, sample2=args.normal, rawdataDir=args.rawdata, outputDir=args.output)
+	main(sample1=args.tumor, sample2=args.normal, rawdataDir=args.rawdata, outputDir=args.output, panel=args.panel, QC=args.QC)
