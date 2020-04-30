@@ -64,6 +64,8 @@ def Design(outputFasta, outputFile, length, thread, tiling):
 		if tileBases < 3:
 			print("[Waring]：叠瓦数设置过大，重定义为1")
 			tileBases = 3
+		if tiling == 1:
+			tileBases = 3
 	length = str(length)
 	tileBases = str(tileBases)
 	design = "mrbait.py"
