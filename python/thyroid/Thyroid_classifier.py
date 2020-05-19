@@ -22,6 +22,14 @@ def normalization(arff):
 					df.loc[i, "Class"] = 0
 	return df
 
+## 重要位点校正。当检测到BRAF V600E，判断为恶性
+def BRAFV600E(df, uniqueID):
+	BRAF_list = []
+	for i in df[uniqueID].index:
+		if df.loc[i, uniqueID] == 1:
+			BRAF_list.append(df.loc[i, "SampleName"])
+	return BRAF_list
+
 ## 模型保存
 def model_save(clf, model):
 	joblib.dump(clf, model)
@@ -46,7 +54,6 @@ def results_predict(clf, x, y, name):
 		resultsDict[sampleName[ns]].append(list(pred_proba[ns]))
 		ns += 1
 	return resultsDict
-
 
 ## 模型拟合计算
 def model_cal(resultsDict):
@@ -81,7 +88,7 @@ def model_cal(resultsDict):
 
 
 ## 主方法
-def main(arff, modelFile, resultsFile, method, n_est, depth, classifier):
+def main(arff, modelFile, resultsFile, method, n_est, depth, classifier, V600E):
 	
 	# 是否训练
 	if method == "train":
@@ -116,6 +123,10 @@ def main(arff, modelFile, resultsFile, method, n_est, depth, classifier):
 		resultsDict = results_predict(clf, xtest, ytest, name_test)
 		results = open(resultsFile, "w")
 		results.write("样本编号\t临床结果\t预测结果\t良性概率\t恶性概率\n")
+		
+		if V600E != "":
+			V600E_list = BRAFV600E(test, V600E)
+
 		for i in resultsDict.keys():
 			if resultsDict[i][0] == 1:
 				act_result = "pathogenic"
@@ -125,8 +136,18 @@ def main(arff, modelFile, resultsFile, method, n_est, depth, classifier):
 				predict_result = "pathogenic"
 			else:
 				predict_result = "benign"
+
 			pred_0 = "%.2f" % resultsDict[i][2][0]
 			pred_1 = "%.2f" % resultsDict[i][2][1]
+
+			if V600E != "":
+				if i in V600E_list:
+					if resultsDict[i][1] == 0:
+						resultsDict[i][1] = 1
+						predict_result = "pathogenic"
+						pred_0 = "0"
+						pred_1 = "1"
+
 			output = "\t".join([i, act_result, predict_result, pred_0, pred_1]) + "\n"
 			results.write(output)
 		results.close()
@@ -161,9 +182,10 @@ if __name__ == "__main__":
 		help="可选，设置决策树深度，仅在训练模式下有效，默认为9", default=9)
 	parser.add_argument("-c", "--classifier", type=str,
 		help="可选，选择训练算法，默认为随机森林。可选'Complement_Naive_Bayes'", default="")
-
+	parser.add_argument("-fix", "--fix", type=str,
+		help="BRAF V600E校正", default="")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(arff=args.arff, modelFile=args.model, resultsFile=args.output, method=args.method, n_est=args.n_est, depth=args.depth, classifier=args.classifier)
+	main(arff=args.arff, modelFile=args.model, resultsFile=args.output, method=args.method, n_est=args.n_est, depth=args.depth, classifier=args.classifier, V600E=args.fix)
