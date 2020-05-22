@@ -16,8 +16,8 @@ def main(function, option):
 		"call_variants": "/function/thyroid_variants_call.py",
 		"make_variants_matrix": "/function/thyroid_matrix.py",
 		"matrix_filter": "/function/thyroid_matrix_filter.py",
-		"arff_maker": "/function/thyroid_data.py",
-		"classification": "/function/thyroid_nodule_classification.py"
+		"arff_maker": "/function/thyroid_data3.py",
+		"classification": "/function/Thyroid_classifier2.py"
 	}
 	print("python3 " + now + function_dict[function] + " " + " ".join(option))
 	subprocess.call("python3 " + now + function_dict[function] + " " + " ".join(option), shell=True)

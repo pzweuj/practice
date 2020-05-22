@@ -1,18 +1,18 @@
 # coding=utf-8
 # pzw
-# 20200402
+# 20200520
 # 甲状腺结节良恶性分析
 # GUI版本
-# v0.1
+# v0.2
 
 import PySimpleGUI as sg
 import os
-import ThyroidPro
+# import ThyroidPro
 import function.thyroid_variants_call
 import function.thyroid_matrix
 import function.thyroid_matrix_filter
-import function.thyroid_data
-import function.thyroid_nodule_classification
+import function.thyroid_data3
+import function.Thyroid_classifier2
 
 # 改变窗体主题颜色
 sg.ChangeLookAndFeel("GreenTan")
@@ -66,15 +66,9 @@ train_layout = [
 	[
 		sg.Text("选择训练算法"),
 		sg.Combo([
-				"bayes.BayesNet",
-				"functions.MultilayerPerceptron",
-				"lazy.IBk",
-				"lazy.KStar",
-				"meta.RandomizableFilteredClassifier",
-				"rules.ZeroR",
-				"trees.RandomTree",
-				"trees.RandomForest"
-			], key="clsMethod", default_value="trees.RandomForest")
+				"RandomForest",
+				"Complement_Naive_Bayes"
+			], key="clsMethod", default_value="RandomForest")
 	],
 	[sg.Submit()]
 	# [sg.Text("Log"), sg.Output(key="train_log")]
@@ -87,8 +81,7 @@ test_layout = [
 	[sg.Text("输入arff文件"), sg.Input(key="arff3"), sg.FileBrowse()],
 	[sg.Text("输入训练模型"), sg.Input(key="model2"), sg.FileBrowse()],
 	[sg.Text("输出预测结果"), sg.Input(key="results"), sg.FileBrowse()],
-	[sg.Checkbox("使用原始编号", default=True, key="origin")],
-	[sg.Text("备注：只有在刚对数据进行完arff文件生成，才能从内存中获得原始编号！")],
+	[sg.Text("BRAF V600E校正点"), sg.Input(key="V600E")],
 	[sg.Submit()]
 	# [sg.Text("Log"), sg.Output(key="test_log")]
 ]
@@ -126,10 +119,10 @@ else:
 	elif tag == "矩阵过滤":
 		function.thyroid_matrix_filter.main(runningDict["matrixFile2"], runningDict["cleanMatrixFile"])
 	elif tag == "Arff生成":
-		function.thyroid_data.main(runningDict["annovarDir2"], runningDict["arff"], runningDict["bed"], runningDict["info"])
+		function.thyroid_data3.main(runningDict["annovarDir2"], runningDict["arff"], runningDict["bed"], runningDict["info"])
 	elif tag == "训练":
-		function.thyroid_nodule_classification.main(runningDict["arff2"], runningDict["model"], "", "train", runningDict["clsMethod"], False)
+		function.Thyroid_classifier2.main(runningDict["arff2"], runningDict["model"], "", "train", 100, 12, runningDict["clsMethod"], "")
 	elif tag == "预测":
-		function.thyroid_nodule_classification.main(runningDict["arff3"], runningDict["model2"], runningDict["results"], "", runningDict["clsMethod"], runningDict["origin"])
+		function.Thyroid_classifier2.main(runningDict["arff3"], runningDict["model2"], runningDict["results"], "", 100, 12, runningDict["clsMethod"], runningDict["V600E"])
 	else:
 		windows.Close()
