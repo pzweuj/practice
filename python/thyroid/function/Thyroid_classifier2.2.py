@@ -150,7 +150,16 @@ def main(arff, modelFile, resultsFile, method, n_est, depth, classifier, V600E, 
 		if classifier == "Complement_Naive_Bayes":
 			model = ComplementNB()
 		else:
-			model = RandomForestClassifier(n_estimators=n_est, bootstrap=True, max_depth=depth)
+			# max_features调参
+			# "auto": max_features=sqrt(n_features)
+			# "sqrt": max_features=sqrt(n_features)
+			# "log2": max_features=log2(n_features)
+			# None: max_features=n_features
+			# int: max_features=int
+			# float: max_features=int(n_features * float)
+			max_f = "auto"
+			model = RandomForestClassifier(n_estimators=n_est,
+				bootstrap=True, max_depth=depth, max_features=max_f)
 		## 读入训练组
 		train = normalization(arff)
 		xtrain = train.iloc[:, 2:]
