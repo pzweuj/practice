@@ -33,7 +33,7 @@ def normalization(arff):
 def BRAFV600E(df, uniqueID):
 	BRAF_list = []
 	for i in df[uniqueID].index:
-		if df.loc[i, uniqueID] == 1:
+		if df.loc[i, uniqueID] != 0:
 			BRAF_list.append(df.loc[i, "SampleName"])
 	return BRAF_list
 
