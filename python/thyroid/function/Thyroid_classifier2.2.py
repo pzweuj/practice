@@ -25,8 +25,10 @@ def normalization(arff):
 			for i in df["Class"].index:
 				if df.loc[i, "Class"] == "pathogenic":
 					df.loc[i, "Class"] = 1
-				else:
+				elif df.loc[i, "Class"] == "benign":
 					df.loc[i, "Class"] = 0
+				else:
+					df.loc[i, "Class"] = 2
 	return df
 
 ## 重要位点校正。当检测到BRAF V600E，判断为恶性
@@ -197,8 +199,10 @@ def main(arff, modelFile, resultsFile, method, n_est, depth, classifier, V600E, 
 		for i in resultsDict.keys():
 			if resultsDict[i][0] == 1:
 				act_result = "pathogenic"
-			else:
+			elif resultsDict[i][0] == 0:
 				act_result = "benign"
+			else:
+				act_result = "unknown"
 			if resultsDict[i][1] == 1:
 				predict_result = "pathogenic"
 			else:
