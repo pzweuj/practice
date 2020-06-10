@@ -12,7 +12,7 @@ import function.thyroid_variants_call
 import function.thyroid_matrix
 import function.thyroid_matrix_filter
 import function.thyroid_data3
-import function.Thyroid_classifier2
+import function.Thyroid_classifier2_3
 
 # 改变窗体主题颜色
 sg.ChangeLookAndFeel("GreenTan")
@@ -63,13 +63,6 @@ train_layout = [
 	[sg.Text("机器学习训练器")],
 	[sg.Text("输入arff文件"), sg.Input(key="arff2"), sg.FileBrowse()],
 	[sg.Text("输出分析模型"), sg.Input(key="model"), sg.FileBrowse()],
-	[
-		sg.Text("选择训练算法"),
-		sg.Combo([
-				"RandomForest",
-				"Complement_Naive_Bayes"
-			], key="clsMethod", default_value="RandomForest")
-	],
 	[sg.Submit()]
 	# [sg.Text("Log"), sg.Output(key="train_log")]
 ]
@@ -121,8 +114,8 @@ else:
 	elif tag == "Arff生成":
 		function.thyroid_data3.main(runningDict["annovarDir2"], runningDict["arff"], runningDict["bed"], runningDict["info"])
 	elif tag == "训练":
-		function.Thyroid_classifier2.main(runningDict["arff2"], runningDict["model"], "", "train", 100, 12, runningDict["clsMethod"], "")
+		function.Thyroid_classifier2.main(runningDict["arff2"], runningDict["model"], "", "train", 0, 0, "")
 	elif tag == "预测":
-		function.Thyroid_classifier2.main(runningDict["arff3"], runningDict["model2"], runningDict["results"], "", 100, 12, runningDict["clsMethod"], runningDict["V600E"])
+		function.Thyroid_classifier2.main(runningDict["arff3"], runningDict["model2"], runningDict["results"], "", 0, 0, runningDict["V600E"])
 	else:
 		windows.Close()
