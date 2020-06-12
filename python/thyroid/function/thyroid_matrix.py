@@ -30,7 +30,7 @@ def GetVariantMatrix(AnnovarFilePath):
 
 				# 筛选阈值
 				bamDepth = l[19].split(";")[0].split("=")[1]
-				if bamDepth <= 100:
+				if int(bamDepth) <= 100:
 					continue
 
 				# 甲状腺癌中，TERT为启动子区域突变，较为特殊
@@ -41,6 +41,7 @@ def GetVariantMatrix(AnnovarFilePath):
 
 				# 其他突变只保留非同义突变
 				else:
+					aachange = "-"
 					if exonicOrNot != "exonic":
 						continue
 					elif "nonsynonymous" not in nonsynon:
@@ -123,8 +124,16 @@ def MakeOutputMatrix(AnnovarFilePath, outputFile):
 					changeInfo = l[9]
 					bamDepth = l[19].split(";")[0].split("=")[1]
 
-					if int(bamDepth) <= 100:
+					if int(bamDepth) <= 500:
 						continue
+
+					if len(changeInfo.split(",")) >= 5:
+						aachange = changeInfo.split(",")[4]
+						if "," in aachange:
+							aachange = aachange.split(",")[0]
+					else:
+						aachange = "-"
+
 
 					otherInfo = l[21]
 					MAF = otherInfo.split(":")[2]
@@ -138,9 +147,11 @@ def MakeOutputMatrix(AnnovarFilePath, outputFile):
 					# 检查是否存在
 					if checkPoint == insertInfo.split("\t")[1]:
 						# 检查是否满足要求，AF>10，DP>100，MAF>1.5%
-						if int(AF) > 10:
-							if float(MAF) > 0.015:
-								insertX = MAF + "(" + str(AF) + "/" + DP + ")"
+						# if int(AF) > 10:
+						# 	if float(MAF) > 0.015:
+
+						# if aachange == insertInfo.split("\t")[5]:
+						insertX = MAF + "(" + str(AF) + "/" + DP + ")"
 			fx.close()
 			Results_f.append(insertX)
 		outputFile.write(files.split(".")[0] + "\t" + "\t".join(Results_f) + "\n")

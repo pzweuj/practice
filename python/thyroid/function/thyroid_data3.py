@@ -11,7 +11,7 @@ def getAbsPath():
 	now = os.path.abspath(os.path.dirname(sys.argv[0]))
 	return now
 
-def GetPanelResults(annovarFileName, bed):
+def GetPanelResults(annovarFileName, bed, depth):
 	dbCheck = open(bed, "r")
 	results = {}
 	for b in dbCheck:
@@ -47,7 +47,7 @@ def GetPanelResults(annovarFileName, bed):
 					if chromA == chrom:
 						if startA == start:
 							if endA == end:
-								if DP >= 100:
+								if DP >= depth:
 									results[uniqueID] = str(AF)
 			annovarFile.close()
 	dbCheck.close()
@@ -60,7 +60,7 @@ def GetPanelResults(annovarFileName, bed):
 
 
 
-def AnalysisPath(AnnovarFilePath, outputArff, bed, trainDict=""):
+def AnalysisPath(AnnovarFilePath, outputArff, bed, depth, trainDict=""):
 	file_list = os.listdir(AnnovarFilePath)
 	test = open(outputArff, "w")
 
@@ -72,16 +72,16 @@ def AnalysisPath(AnnovarFilePath, outputArff, bed, trainDict=""):
 		else:
 			n += 1
 
-	i = 1
+	i = 0
 	numList = []
-	while i <= n:
+	while i <= (n - 1):
 		numList.append("T" + str(i))
 		i += 1
 	test.write("SampleName\tClass\t" + "\t".join(numList) + "\n")
 
 	sampleList = []
 	for f in file_list:
-		resultsList = GetPanelResults(AnnovarFilePath + "/" + f, bed)
+		resultsList = GetPanelResults(AnnovarFilePath + "/" + f, bed, depth)
 		sampleName = f.split(".")[0]
 		sampleList.append(sampleName)
 		oo = "\t".join(resultsList) + "\n"
@@ -93,7 +93,7 @@ def AnalysisPath(AnnovarFilePath, outputArff, bed, trainDict=""):
 	test.close()
 	return sampleList
 
-def main(AnnovarFilePath, outputArff, bed, train):
+def main(AnnovarFilePath, outputArff, bed, depth, train):
 	if train:
 		trainDict = {}
 		trainFile = open(train, "r")
@@ -103,9 +103,9 @@ def main(AnnovarFilePath, outputArff, bed, train):
 			diagnoise = lines[1].split("\n")[0]
 			trainDict[sampleName] = diagnoise
 
-		sampleList = AnalysisPath(AnnovarFilePath, outputArff, bed, trainDict)
+		sampleList = AnalysisPath(AnnovarFilePath, outputArff, bed, depth, trainDict)
 	else:
-		sampleList = AnalysisPath(AnnovarFilePath, outputArff, bed)
+		sampleList = AnalysisPath(AnnovarFilePath, outputArff, bed, depth)
 
 	print("Task done")
 
@@ -122,10 +122,12 @@ if __name__ == "__main__":
 		help="the output arff file")
 	parser.add_argument("-b", "--bed", type=str,
 		help="panel bed file，格式参考function文件夹内bed文件。")
+	parser.add_argument("-d", "--depth", type=int,
+		help="位点过滤深度，默认500", default=500)
 	parser.add_argument("-t", "--train", type=str, default="",
 		help="train infomation, option")
 	if len(sys.argv[1:]) == 0:
 		parser.print_help()
 		parser.exit()
 	args = parser.parse_args()
-	main(AnnovarFilePath=args.input, outputArff=args.output, bed=args.bed, train=args.train)
+	main(AnnovarFilePath=args.input, outputArff=args.output, bed=args.bed, depth=args.depth, train=args.train)
