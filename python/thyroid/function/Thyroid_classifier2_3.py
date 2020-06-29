@@ -173,7 +173,7 @@ def main(arff, modelFile, resultsFile, method, n_est, depth, V600E, Tree, ROC, f
 			### 仅判断以下树数和深度的组合
 			tryDict = {
 				"n_estimators": [80, 90, 100, 110, 120],
-				"max_depth": [11, 12, 14, 15, 16]
+				"max_depth": [12, 13, 14, 15, 16]
 			}
 			scores_out = 0
 			for nn in tryDict["n_estimators"]:
