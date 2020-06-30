@@ -84,25 +84,31 @@ def getMappingReads(outputDir, sample):
 	return str(results).split("b'")[1].split("\\n")[0]
 
 
-def bamAnalysis(outputDir, sample, bedFile):
+def bamAnalysis(outputDir, sample, bedFile, bamMode):
 
 	coverageDict = LocationCov(outputDir, sample)
 	bed = open(bedFile, "r")
 
 	outputFile = open(outputDir + "/covStat/" + sample + ".results.txt", "w")
-	jsonFile = json.load(open(outputDir + "/QC/" + sample + ".json", "r"))
-	rawReads = jsonFile["summary"]["before_filtering"]["total_reads"]
-	rawBases = jsonFile["summary"]["before_filtering"]["total_bases"]
-	cleanReads = jsonFile["summary"]["after_filtering"]["total_reads"]
-	cleanBases = jsonFile["summary"]["after_filtering"]["total_bases"]
+	
+	if not bamMode:
+		jsonFile = json.load(open(outputDir + "/QC/" + sample + ".json", "r"))
+		rawReads = jsonFile["summary"]["before_filtering"]["total_reads"]
+		rawBases = jsonFile["summary"]["before_filtering"]["total_bases"]
+		cleanReads = jsonFile["summary"]["after_filtering"]["total_reads"]
+		cleanBases = jsonFile["summary"]["after_filtering"]["total_bases"]
+	
 	mappingReads = getMappingReads(outputDir, sample)
 
 	outputFile.write("# " + sample + "\n")
 	outputFile.write("# Panel\t" + bedFile + "\n")
-	outputFile.write("rawReads\t" + str(rawReads) + "\n")
-	outputFile.write("rawBases\t" + str(rawBases) + "\n")
-	outputFile.write("cleanReads\t" + str(cleanReads) + "\n")
-	outputFile.write("cleanBases\t" + str(cleanBases) + "\n")
+
+	if not bamMode:
+		outputFile.write("rawReads\t" + str(rawReads) + "\n")
+		outputFile.write("rawBases\t" + str(rawBases) + "\n")
+		outputFile.write("cleanReads\t" + str(cleanReads) + "\n")
+		outputFile.write("cleanBases\t" + str(cleanBases) + "\n")
+	
 	outputFile.write("mappingReads\t" + mappingReads + "\n")
 
 
@@ -160,7 +166,7 @@ def bamAnalysis(outputDir, sample, bedFile):
 	bed.close()
 
 def freebayes(outputDir, sample):
-	freebayes = "reebayes-v1.3.1"
+	freebayes = "freebayes-v1.3.1"
 	gatk = "gatk"
 	hg19 = "hg19.fa"
 	samtools = "samtools"
@@ -209,7 +215,7 @@ def main(inputDir, outputDir, sample, thread, adapter, trim, bedFile, egfr, bamM
 		print("[提取信息中] " + sample)
 		bedtools(outputDir, sample)
 		print("[获得结果中] " + sample)
-		bamAnalysis(outputDir, sample, bedFile)
+		bamAnalysis(outputDir, sample, bedFile, bamMode)
 		if egfr:
 			freebayes(outputDir, sample)
 		print("[完成] " + sample)
@@ -217,7 +223,7 @@ def main(inputDir, outputDir, sample, thread, adapter, trim, bedFile, egfr, bamM
 		print("[提取信息中] " + sample)
 		bedtools(outputDir, sample)
 		print("[获得结果中] " + sample)
-		bamAnalysis(outputDir, sample, bedFile)
+		bamAnalysis(outputDir, sample, bedFile, bamMode)
 		if egfr:
 			freebayes(outputDir, sample)
 		print("[完成] " + sample)
