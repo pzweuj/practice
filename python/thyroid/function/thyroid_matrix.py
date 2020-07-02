@@ -44,7 +44,7 @@ def GetVariantMatrix(AnnovarFilePath):
 					aachange = "-"
 					if exonicOrNot != "exonic":
 						continue
-					elif "nonsynonymous" not in nonsynon:
+					elif nonsynon == "synonymous SNV":
 						continue
 					else:
 						cc = changeInfo.split(":")
