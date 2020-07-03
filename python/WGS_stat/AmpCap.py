@@ -127,12 +127,32 @@ def bamAnalysis(outputDir, sample, bedFile, bamMode):
 
 		covBases = 0
 		baseNotCover = 0
+		covR_30x = 0
+		covR_100x = 0
+		covR_500x = 0
+		covR_2000x = 0
+		covR_5000x = 0
 
 		for i in range(int(start), int(end)+1):
 			if not (chrom + ":" + str(i)) in coverageDict.keys():
 				s = 0
 				baseNotCover += 1
 			else:
+				if int(coverageDict[chrom + ":" + str(i)]) >= 30:
+					covR_30x += 1
+				
+				if int(coverageDict[chrom + ":" + str(i)]) >= 100:
+					covR_100x += 1
+				
+				if int(coverageDict[chrom + ":" + str(i)]) >= 500:
+					covR_500x += 1
+				
+				if int(coverageDict[chrom + ":" + str(i)]) >= 2000:
+					covR_2000x += 1
+				
+				if int(coverageDict[chrom + ":" + str(i)]) >= 5000:
+					covR_5000x += 1
+
 				s = int(coverageDict[chrom + ":" + str(i)])
 			covBases += s
 
@@ -143,12 +163,17 @@ def bamAnalysis(outputDir, sample, bedFile, bamMode):
 		lengthSum += length
 
 		covPercent = "%.2f" % (float((length - baseNotCover)) / float(length) * 100) + "%"
+		covPercent_30x = "%.2f" % (float(covR_30x) / float(length) * 100) + "%"
+		covPercent_100x = "%.2f" % (float(covR_100x) / float(length) * 100) + "%"
+		covPercent_500x = "%.2f" % (float(covR_500x) / float(length) * 100) + "%"
+		covPercent_2000x = "%.2f" % (float(covR_2000x) / float(length) * 100) + "%"
+		covPercent_5000x = "%.2f" % (float(covR_5000x) / float(length) * 100) + "%"
 
-		outputLine.append([name.split("\n")[0], chrom, start, end, str(length), averageDepth, covPercent])
+		outputLine.append([name.split("\n")[0], chrom, start, end, str(length), averageDepth, covPercent, covPercent_30x, covPercent_100x, covPercent_500x, covPercent_2000x, covPercent_5000x])
 
 	mappingAverageDepth = float(basesSum) / float(lengthSum)
 	outputFile.write("averageDepth\t" + ("%.2f" % mappingAverageDepth) + "\n")
-	outputFile.write("# " + "\t".join(["AmpID", "chrom", "start", "end", "length", "averageDepth", "coverage", "是否达到均一标准", "比例\n"]))
+	outputFile.write("# " + "\t".join(["AmpID", "chrom", "start", "end", "length", "averageDepth", "coverage_1x", "coverage_30x", "coverage_100x", "coverage_500x", "coverage_2000x", "coverage_5000x", "是否达到均一标准", "比例\n"]))
 
 
 	for i in outputLine:
