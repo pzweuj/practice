@@ -1,6 +1,6 @@
 # coding:utf-8
 # pzw
-# 20200220
+# 20201029
 # AmpCap
 # amplicon capture analysis
 
@@ -70,8 +70,16 @@ def LocationCov(outputDir, sample):
 		if int(lines[3]) == 0:
 			continue
 		else:
+			if "e+" in lines[3]:
+				scis = lines[3].split("e+")
+				numb = float(scis[0])
+				tim = int(scis[1])
+				sci = numb * (10 ** tim)
+				cov_fix = str(sci)
+			else:
+				cov_fix = lines[3]
 			for i in range(int(lines[1])+1, int(lines[2])+1):
-				covDict[lines[0] + ":" + str(i)] = lines[3]
+				covDict[lines[0] + ":" + str(i)] = cov_fix
 	covFile.close()
 	return covDict
 
