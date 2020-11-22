@@ -25,10 +25,10 @@ def pmid2ref(pmid):
 for pmid in pmidlist:
 	if '\n' in pmid:
 		pmid = pmid.split('\n')[0]
-	print pmid + ' done'
+	# print pmid + ' done'
 	results = pmid2ref(pmid).encode('utf8')
 	output.write(results + '\n')
 
 pmidlist.close()
 output.close()
-print 'task done'
+# print 'task done'
