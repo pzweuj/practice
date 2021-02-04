@@ -314,7 +314,7 @@ def main(inputDir, outputDir, sampleList, bed, threads):
 		print("##################################")
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Germline Pipeline by genephar",
+	parser = argparse.ArgumentParser(description="Germline Pipeline",
 		prog="GermlineCaller",
 		usage="GermlineCaller -i <input dir> -o <output dir> -s <sample list> -t <threads>")
 	group = parser.add_mutually_exclusive_group()

@@ -501,7 +501,7 @@ def main(sample, rawdataDir, outputDir, step, threads):
 	print "***[ "+sample+" done]***", getTime()
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="CLOCK Analysis Pipeline by genephar",
+	parser = argparse.ArgumentParser(description="CLOCK Analysis Pipeline",
 		prog="clock_analysis",
 		usage="python clock_analysis.py -i <sample> -o <output dir> -r <rawdata dir>")
 	group = parser.add_mutually_exclusive_group()

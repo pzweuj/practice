@@ -359,7 +359,7 @@ def main(inputDir, outputDir, sampleList, bed, threads, method):
 		print(sample, "finish: ", getTime())
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Variant Caller Pipeline by genephar",
+	parser = argparse.ArgumentParser(description="Variant Caller Pipeline",
 		prog="VariantCaller",
 		usage="VariantCaller -i <input dir> -o <output dir> -s <sample list> -t <threads> -m <method>")
 	group = parser.add_mutually_exclusive_group()
