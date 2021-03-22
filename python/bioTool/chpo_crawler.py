@@ -66,14 +66,16 @@ def randomIP():
 
 # 爬取
 def chinahpo(hpo):
-    s = random.randint(5, 10)
-    print("等待 " + str(s) + "秒")
-    time.sleep(s)
+	# 如果使用IP池，则不进行随机等待
+    # s = random.randint(5, 10)
+    # print("等待 " + str(s) + "秒")
+    # time.sleep(s)
     ip = randomIP()
+    # ip = "socks5://127.0.0.1:1080"
     print("使用IP " + ip)
     options = EdgeOptions()
     options.use_chromium = True
-    # options.add_argument("headless")
+    options.add_argument("headless")
     # options.add_argument("disable-gpu")
     options.add_argument("--proxy-server={ip}".format(ip=ip))
     options.add_argument("--disable-blink-features")
@@ -87,6 +89,7 @@ def chinahpo(hpo):
     script = "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
     driver.execute_script(script)
     UA = randomUA()
+    # UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36"
     driver.execute_cdp_cmd("Network.setUserAgentOverride", {"userAgent": UA})
     print(driver.execute_script("return navigator.userAgent;"))
 
@@ -101,7 +104,7 @@ def chinahpo(hpo):
         print("get page error", hpo)
 
     time.sleep(2)
-    with open("html/hp_" + hpid + ".html", "a+", encoding="utf-8") as f:
+    with open("html2/hp_" + hpid + ".html", "a+", encoding="utf-8") as f:
         f.write(str(driver.page_source))
 
     driver.close()
@@ -112,6 +115,7 @@ def chinahpo(hpo):
 # 解析
 def analysis(hpo):
     hpid = hpo.split(":")[1]
+    print(hpo)
     file = open("html/hp_" + hpid + ".html", "rb")
     html = file.read()
     soup = BeautifulSoup(html, "html.parser")
@@ -162,6 +166,7 @@ hpoFile.close()
 #         hpoString = analysis(hpo)
 #         r.write(hpoString + "\n")
 #     except:
-#         pass
+#         hpid = hpo.split(":")[1]
+#         r.write(hpo + "\t-\t-\t-\t-\thttp://www.chinahpo.org/#/searchList?trigger=1&tabType=1&searchContent=HP%3A{hpid}\n".format(hpid=hpid))
 # r.close()
 # hpoFileFinish.close()
