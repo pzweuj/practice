@@ -2,6 +2,7 @@ import json
 import random
 import requests
 
+# https://github.com/fate0/proxylist
 p = open("proxy.list.txt", "r")
 proxy_list = []
 for line in p:
@@ -80,6 +81,13 @@ def test_proxy(tmp_list):
             print("failed:{}".format(ip_port))
 
     return proxy_list
+
+
+# a = open("ip.txt", "r")
+# proxy_list = []
+# for line in a:
+#     proxy_list.append(":".join(line.replace("\n", "").split("\t")))
+# a.close()
 
 
 final_list = test_proxy(proxy_list)
