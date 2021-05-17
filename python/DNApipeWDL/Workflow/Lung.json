@@ -1,0 +1,7 @@
+{
+  "Lung.sample": "443732135100T",
+  "Lung.rawRead1": "/mnt/d/ubuntu/project/WDL_20210517/rawdata/443732135100T_R1.fastq.gz",
+  "Lung.rawRead2": "/mnt/d/ubuntu/project/WDL_20210517/rawdata/443732135100T_R2.fastq.gz",
+  "Lung.threads": "8"
+}
+
