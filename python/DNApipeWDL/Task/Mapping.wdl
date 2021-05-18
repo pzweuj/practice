@@ -119,7 +119,6 @@ task Recalibrator {
         File bai
     }
 
-    File GATK = "/home/bioinfo/ubuntu/software/gatk-4.1.9.0/gatk"
     File reference = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta"
     File ref_fai = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta.fai"
     File ref_dict = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.dict"
@@ -131,7 +130,7 @@ task Recalibrator {
     File dbsnpIdx = "/home/bioinfo/ubuntu/database/hg19/dbsnp_138.hg19.vcf.idx"
 
     command <<<
-        ~{GATK} BaseRecalibrator \
+        gatk BaseRecalibrator \
             --known-sites ~{millsIndel} \
             --known-sites ~{genome1k} \
             --known-sites ~{dbsnp} \
@@ -142,6 +141,10 @@ task Recalibrator {
 
     output {
         File table = "~{sample}.recal.table"
+    }
+
+    runtime {
+        docker: "aperdriau/gatk4.2.0"
     }
 
 }
@@ -156,13 +159,12 @@ task ApplyBQSR {
         File table
     }
 
-    File GATK = "/home/bioinfo/ubuntu/software/gatk-4.1.9.0/gatk"
     File reference = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta"
     File ref_fai = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta.fai"
     File ref_dict = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.dict"
 
     command <<<
-        ~{GATK} ApplyBQSR \
+        gatk ApplyBQSR \
             -R ~{reference} \
             --bqsr-recal-file ~{table} \
             -I ~{bam} \
@@ -172,6 +174,10 @@ task ApplyBQSR {
     output {
         File realignBam = "~{sample}.Realign.bam"
         File realignBamBai = "~{sample}.Realign.bai"
+    }
+
+    runtime {
+        docker: "aperdriau/gatk4.2.0"
     }
 }
 
@@ -190,6 +196,7 @@ task Bamdst {
     File BAMDST = "/home/bioinfo/ubuntu/software/bamdst/bamdst"
 
     command <<<
+        mkdir ~{sample}_tmp
         ~{BAMDST} \
             -p ~{bed} \
             -o ~{sample}_tmp \
