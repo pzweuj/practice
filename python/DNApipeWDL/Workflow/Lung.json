@@ -1,7 +1,7 @@
 {
-  "Lung.sample": "String",
-  "Lung.rawRead2": "File",
   "Lung.rawRead1": "File",
-  "Lung.threads": "Int"
+  "Lung.threads": "8",
+  "Lung.rawRead2": "File",
+  "Lung.sample": "String"
 }
 

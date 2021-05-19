@@ -12,23 +12,19 @@ task Lumpy {
         File bai
     }
 
-    File LUMPYEXPRESS = "/home/bioinfo/ubuntu/software/lumpy-sv/scripts/lumpyexpress"
-    File EXTRACTSR = "/home/bioinfo/ubuntu/software/lumpy-sv/scripts/extractSplitReads_BwaMem"
-    File SAMTOOLS = "/home/bioinfo/ubuntu/software/samtools-1.11/samtools"
-
     command <<<
-        ~{SAMTOOLS} view -bh -F 1294 ~{bam} \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+        samtools view -bh -F 1294 ~{bam} \
+            | samtools sort -@ ~{threads} - \
             -o ~{sample}.discordants.bam
-        ~{SAMTOOLS} index ~{sample}.discordants.bam
-        ~{SAMTOOLS} view -h ~{bam} \
-            | ~{EXTRACTSR} \
+        samtools index ~{sample}.discordants.bam
+        samtools view -h ~{bam} \
+            | extractSplitReads_BwaMem \
             -i stdin \
-            | ~{SAMTOOLS} view -bSh - \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+            | samtools view -bSh - \
+            | samtools sort -@ ~{threads} - \
             -o ~{sample}.splitters.bam
-        ~{SAMTOOLS} index ~{sample}.splitters.bam
-        ~{LUMPYEXPRESS} -B ~{bam} \
+        samtools index ~{sample}.splitters.bam
+        lumpyexpress -B ~{bam} \
             -D ~{sample}.discordants.bam \
             -S ~{sample}.splitters.bam \
             -o ~{sample}.lumpy.vcf
@@ -36,6 +32,10 @@ task Lumpy {
 
     output {
         File vcf = "~{sample}.lumpy.vcf"
+    }
+
+    runtime {
+        docker: "marrip/lumpy:v0.3.1"
     }
 }
 
@@ -51,34 +51,30 @@ task LumpyPair {
         File normalBamBai
     }
 
-    File LUMPYEXPRESS = "/home/bioinfo/ubuntu/software/lumpy-sv/scripts/lumpyexpress"
-    File EXTRACTSR = "/home/bioinfo/ubuntu/software/lumpy-sv/scripts/extractSplitReads_BwaMem"
-    File SAMTOOLS = "/home/bioinfo/ubuntu/software/samtools-1.11/samtools"
-
     command <<<
-        ~{SAMTOOLS} view -bh -F 1294 ~{tumorBam} \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+        samtools view -bh -F 1294 ~{tumorBam} \
+            | samtools sort -@ ~{threads} - \
             -o ~{sample}.discordants.bam
-        ~{SAMTOOLS} index ~{sample}.discordants.bam
-        ~{SAMTOOLS} view -h ~{tumorBam} \
-            | ~{EXTRACTSR} \
+        samtools index ~{sample}.discordants.bam
+        samtools view -h ~{tumorBam} \
+            | extractSplitReads_BwaMem \
             -i stdin \
-            | ~{SAMTOOLS} view -bSh - \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+            | samtools view -bSh - \
+            | samtools sort -@ ~{threads} - \
             -o ~{sample}.splitters.bam
-        ~{SAMTOOLS} index ~{sample}.splitters.bam
-        ~{SAMTOOLS} view -bh -F 1294 ~{normalBam} \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+        samtools} index ~{sample}.splitters.bam
+        samtools view -bh -F 1294 ~{normalBam} \
+            | samtools sort -@ ~{threads} - \
             -o ~{pair}.discordants.bam
-        ~{SAMTOOLS} index ~{pair}.discordants.bam
-        ~{SAMTOOLS} view -h ~{normalBam} \
-            | ~{EXTRACTSR} \
+        samtools index ~{pair}.discordants.bam
+        samtools view -h ~{normalBam} \
+            | extractSplitReads_BwaMem \
             -i stdin \
-            | ~{SAMTOOLS} view -bSh - \
-            | ~{SAMTOOLS} sort -@ ~{threads} - \
+            | samtools view -bSh - \
+            | samtools sort -@ ~{threads} - \
             -o ~{pair}.splitters.bam
-        ~{SAMTOOLS} index ~{pair}.splitters.bam
-        ~{LUMPYEXPRESS} -B ~{tumorBam},~{normalBam} \
+        samtools index ~{pair}.splitters.bam
+        lumpyexpress -B ~{tumorBam},~{normalBam} \
             -D ~{sample}.discordants.bam,~{pair}.discordants.bam \
             -S ~{sample}.splitters.bam,~{pair}.splitters.bam \
             -o ~{sample}.lumpy.vcf
@@ -86,6 +82,10 @@ task LumpyPair {
 
     output {
         File vcf = "~{sample}.lumpy.vcf"
+    }
+
+    runtime {
+        docker: "marrip/lumpy:v0.3.1"
     }
 }
 
@@ -114,7 +114,7 @@ task LumpyFilter {
         filterAlt = int(filterDP * filterVAF)
 
         lumpyResults = open(lumpyResultsFile, "r")
-        lumpyResultsFilter = open(lumpyResultsFile.replace(".vcf", ".filter.vcf"), "w")
+        lumpyResultsFilter = open("~{sample}.lumpy.filter.vcf", "w")
         for line in lumpyResults:
             if line.startswith("#"):
                 lumpyResultsFilter.write(line)
@@ -188,7 +188,7 @@ task LumpyFilter {
     >>>
 
     output {
-        File filterVcf = "~{sample}.lumpy.filter.vcf"
+        File vcfFilter = "~{sample}.lumpy.filter.vcf"
     }
 
 }
@@ -223,7 +223,7 @@ task LumpyFilterPair {
         filterAlt = int(filterDP * filterVAF)
 
         lumpyResults = open(lumpyResultsFile, "r")
-        lumpyResultsFilter = open(lumpyResultsFile.replace(".vcf", ".filter.vcf"), "w")
+        lumpyResultsFilter = open("~{sample}.lumpy.filter.vcf", "w")
         for line in lumpyResults:
             # print(line)
             if line.startswith("#"):
@@ -350,11 +350,10 @@ task Manta {
 
     File reference = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta"
     File ref_fai = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta.fai"
-    File MANTA = "/home/bioinfo/ubuntu/software/manta-1.6.0/bin/configManta.py"
 
     command <<<
         mkdir ~{sample}_tmp
-        python3 ~{MANTA} \
+        configManta.py \
             --tumorBam ~{bam} \
             --referenceFasta ~{reference} \
             --exome \
@@ -366,6 +365,10 @@ task Manta {
 
     output {
         File vcf = "~{sample}.manta.vcf"
+    }
+
+    runtime {
+        docker: "pzweuj/manta:v1.6.0"
     }
 }
 
@@ -381,11 +384,10 @@ task MantaPair {
 
     File reference = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta"
     File ref_fai = "/home/bioinfo/ubuntu/database/hg19/ucsc.hg19.fasta.fai"
-    File MANTA = "/home/bioinfo/ubuntu/software/manta-1.6.0/bin/configManta.py"
 
     command <<<
         mkdir ~{sample}_tmp
-        python3 ~{MANTA} \
+        configManta.py \
             --tumorBam ~{tumorBam} \
             --normalBam ~{normalBam} \
             --referenceFasta ~{reference} \
@@ -400,13 +402,476 @@ task MantaPair {
         File vcf = "~{sample}.manta.vcf"
     }
 
+    runtime {
+        docker: "pzweuj/manta:v1.6.0"
+    }
 }
 
 task MantaFilter {
     input {
         String sample
         File vcf
+        Int depth
+        Float maf
     }
 
-    
+    command <<<
+        python3 <<CODE
+        sampleID = "~{sample}"
+        mantaResultsFile = "~{vcf}"
+
+        filterDP = ~{depth}
+        filterVAF = ~{maf}
+        filterAlt = int(filterDP * filterVAF)
+
+        mantaResults = open(mantaResultsFile, "r")
+        mantaResultsFilter = open("~{sample}.manta.filter.vcf", "w")
+        for line in mantaResults:
+            if line.startswith("#"):
+                mantaResultsFilter.write(line)
+            else:
+                lineAfterSplit = line.split("\n")[0].split("\t")
+                FORMAT = lineAfterSplit[8]
+                
+                FORMAT_info = lineAfterSplit[9]
+                if "PR" not in FORMAT:
+                    SR = FORMAT_info.split(",")
+                    PR_ref = "0"
+                    PR_alt = "0"
+                    SR_ref = SR[0]
+                    SR_alt = SR[1]
+                elif "SR" not in FORMAT:
+                    PR = FORMAT_info.split(",")
+                    SR_ref = "0"
+                    SR_alt = "0"
+                    PR_ref = PR[0]
+                    PR_alt = PR[1]
+                else:
+                    FORMAT_infos = FORMAT_info.split(":")
+                    PR = FORMAT_infos[0].split(",")
+                    SR = FORMAT_infos[1].split(",")
+                    PR_ref = PR[0]
+                    PR_alt = PR[1]
+                    SR_ref = SR[0]
+                    SR_alt = SR[1]
+                
+                Ref_total = int(PR_ref) + int(SR_ref)
+                Alt_total = int(PR_alt) + int(SR_alt)
+                if Ref_total < filterDP:
+                    continue
+                if Alt_total < filterAlt:
+                    continue
+
+                mantaResultsFilter.write(line)
+        mantaResultsFilter.close()
+        mantaResults.close()        
+        CODE
+    >>>
+
+    output {
+        File vcfFilter = "~{sample}.manta.filter.vcf"
+    }
+}
+
+
+task MantaFilterPair {
+    input {
+        String sample
+        String pair
+        File vcf
+        Int depth
+        Float maf
+    }
+
+    command <<<
+        sampleID = "~{sample}"
+        pairID = "~{pair}"
+        mantaResultsFile = "~{vcf}"
+
+        filterDP = ~{depth}
+        filterVAF = ~{maf}
+        filterAlt = int(filterDP * filterVAF)
+
+        mantaResults = open(mantaResultsFile, "r")
+        mantaResultsFilter = open("~{sample}.manta.filter.vcf", "w")
+        for line in mantaResults:
+            if line.startswith("#"):
+                mantaResultsFilter.write(line)
+            else:
+                lineAfterSplit = line.split("\n")[0].split("\t")
+                FORMAT = lineAfterSplit[8]
+                FORMAT_info = lineAfterSplit[10]
+
+                if "PR" not in FORMAT:
+                    SR = FORMAT_info.split(",")
+                    PR_ref = "0"
+                    PR_alt = "0"
+                    SR_ref = SR[0]
+                    SR_alt = SR[1]
+                elif "SR" not in FORMAT:
+                    PR = FORMAT_info.split(",")
+                    SR_ref = "0"
+                    SR_alt = "0"
+                    PR_ref = PR[0]
+                    PR_alt = PR[1]
+                else:
+                    FORMAT_infos = FORMAT_info.split(":")
+                    PR = FORMAT_infos[0].split(",")
+                    SR = FORMAT_infos[1].split(",")
+                    PR_ref = PR[0]
+                    PR_alt = PR[1]
+                    SR_ref = SR[0]
+                    SR_alt = SR[1]
+                
+                Ref_total = int(PR_ref) + int(SR_ref)
+                Alt_total = int(PR_alt) + int(SR_alt)
+                if Ref_total < filterDP:
+                    continue
+                if Alt_total < filterAlt:
+                    continue
+
+                mantaResultsFilter.write(line)
+        mantaResultsFilter.close()
+        mantaResults.close()   
+    >>>
+
+    output {
+        File vcfFilter = "~{sample}.manta.filter.vcf"
+    }
+}
+
+
+task FusionAnno {
+    input {
+        String sample
+        String pair = ""
+        File lumpyVcf
+        File mantaVcf
+    }
+
+    File refFlat = "/home/bioinfo/ubuntu/database/hg19/hg19_refFlat.txt"
+
+    command <<<
+        python3 <<CODE
+        import os
+        def checkFusionHotSpot(fusionStrand, chrom, breakPoint):
+            database = "~{refFlat}"
+            db = open(database, "r")
+            output = []
+            ts_output = []
+            for line in db:
+                l = line.split("\n")[0].split("\t")
+                gene = l[0]
+                ts = l[1]
+                chrom_db = l[2]
+                strand = l[3]
+                gene_start = l[4]
+                gene_end = l[5]
+                cds_start = l[6]
+                cds_end = l[7]
+                exon_nums = l[8]
+                exon_starts = l[9]
+                exon_ends = l[10]
+
+                # 寻找注释
+                if chrom == chrom_db:
+                    # 找到目标基因
+                    if (int(breakPoint) >= int(gene_start)) and (int(breakPoint) <= int(gene_end)):
+
+                        exon_starts_list = exon_starts.split(",")[0: -1]
+                        exon_ends_list = exon_ends.split(",")[0: -1]
+
+                        # 将外显子起止点形成列表
+                        exon_checkpoint = []
+                        i = 0
+                        while i < int(exon_nums):
+                            exon_checkpoint.append(int(exon_starts_list[i]))
+                            exon_checkpoint.append(int(exon_ends_list[i]))
+                            i += 1
+
+                        # 判断目标基因的转录方向
+                        if strand == "+":
+                            if int(breakPoint) < exon_checkpoint[0]:
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_5UTR"
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_exon1"
+                                else:
+                                    exon_out = gene + "_?"
+
+                            elif int(breakPoint) > exon_checkpoint[-1]:
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_exon" + exon_nums
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_3UTR"
+                                else:
+                                    exon_out = gene + "_?"
+
+                            else:
+                                n = 0
+                                while n < (2 * int(exon_nums) - 1):
+                                    if (int(breakPoint) >= exon_checkpoint[n]) and (int(breakPoint) <= exon_checkpoint[n+1]):
+                                        checkN = n
+                                    n += 1
+
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_exon" + str(checkN // 2 + 1)
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_exon" + str((checkN + 1) // 2 + 1)
+                                else:
+                                    exon_out = gene + "_?"
+
+
+                        if strand == "-":
+                            if int(breakPoint) < exon_checkpoint[0]:
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_3UTR"
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_exon" + exon_nums
+                                else:
+                                    exon_out = gene + "_?"
+
+
+                            elif int(breakPoint) > exon_checkpoint[-1]:
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_exon1"
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_5UTR"
+                                else:
+                                    exon_out = gene + "_?"
+
+                            else:
+                                n = 0
+                                while n < (2 * int(exon_nums) - 1):
+                                    if (int(breakPoint) >= exon_checkpoint[n]) and (int(breakPoint) <= exon_checkpoint[n+1]):
+                                        checkN = n
+                                    n += 1
+
+                                if fusionStrand == "+":
+                                    exon_out = gene + "_exon" + str(int(exon_nums) - checkN // 2)
+                                elif fusionStrand == "-":
+                                    exon_out = gene + "_exon" + str(int(exon_nums) - (checkN + 1) // 2)
+                                else:
+                                    exon_out = gene + "_?"
+
+                        output.append(exon_out)
+                        ts_output.append(ts)
+            if not output:
+                output.append("GeneUnknown_exon?")        
+            if not ts_output:
+                ts_output.append("Transcript?")
+            db.close()
+            return [output, ts_output]
+
+        # 注释开始
+        sampleID = "~{sample}"
+        pairID = "~{pair}"
+
+        # lumpy
+        svFile = open("~{lumpyVcf}", "r")
+        svAnno = open("~{sample}.fusion.txt", "w")
+        svAnno.write("chrom1\tbreakpoint1\tgene1\tchrom2\tbreakpoint2\tgene2\tfusionType\tAlt\tgeneSymbol\tPR\tSR\tDP\tVAF\tExon\tTranscript\tSource\n")
+        for line in svFile:
+            if line.startswith("#"):
+                continue
+            else:
+                lineAfterSplit = line.split("\t")
+                chrom = lineAfterSplit[0]
+                Pos = lineAfterSplit[1]
+                ID = lineAfterSplit[2]
+                Ref = lineAfterSplit[3]
+                Alt = lineAfterSplit[4]
+                Qual = lineAfterSplit[5]
+                Filter = lineAfterSplit[6]
+                Info = lineAfterSplit[7]
+                Format = lineAfterSplit[8]
+
+                if pairID == "":
+                    Sample = lineAfterSplit[9]
+                else:
+                    Sample = lineAfterSplit[10]
+
+                if chrom == "chrM":
+                    continue
+
+                if ":" in Format:
+                    S = Sample.split(":")
+                    PR = S[0].split(",")
+                    SR = S[1].split(",")
+                    PR_ref = int(PR[0])
+                    PR_alt = int(PR[1])
+                    SR_ref = int(SR[0])
+                    SR_alt = int(SR[1])
+                else:
+                    PR = Sample.split(",")
+                    PR_ref = int(PR[0])
+                    PR_alt = int(PR[1])
+                    SR_ref = SR_alt = 0
+
+                DP = PR_ref + SR_ref + PR_alt + SR_alt
+                VAF = "%.2f" % (100 * float(PR_alt + SR_alt) / DP) + "%"
+
+                if ("[" in Alt) or ("]" in Alt):
+                    if chrom in Alt:
+                        fusionType = "Inversion"
+                    else:
+                        fusionType = "Translocation"
+
+                    # G    [chr1:1111111[G
+                    if Alt[0] == "[":
+                        chrom2 = Alt.split(":")[0].split("[")[1]
+                        breakpoint2 = Alt.split(":")[1].split("[")[0]
+                        strand = "--"
+                    
+                    # G    G[chr1:1111111[
+                    elif Alt[-1] == "[":
+                        chrom2 = Alt.split(":")[0].split("[")[1]
+                        breakpoint2 = Alt.split(":")[1].split("[")[0]
+                        strand = "+-"
+
+                    # G    ]chr1:1111111]G
+                    elif Alt[0] == "]":
+                        chrom2 = Alt.split(":")[0].split("]")[1]
+                        breakpoint2 = Alt.split(":")[1].split("]")[0]
+                        strand = "-+"
+
+                    # G    G]chr1:1111111]
+                    elif Alt[-1] == "]":
+                        chrom2 = Alt.split(":")[0].split("]")[1]
+                        breakpoint2 = Alt.split(":")[1].split("]")[0]
+                        strand = "++"
+
+                    else:
+                        chrom2 = "Unknown"
+                        breakpoint2 = "Unknown"
+                        strand = "Unknown"
+                        print("can not analysis: " + ID)
+
+                    anno1 = checkFusionHotSpot(strand[0], chrom, Pos)
+                    if chrom2 != "Unknown":
+                        anno2 = checkFusionHotSpot(strand[1], chrom2, breakpoint2)
+                    else:
+                        anno2 = [["GeneUnknown_exon?"], ["Transcript?"]]
+
+                    gene1 = anno1[0][0].split("_")[0]
+                    gene2 = anno2[0][0].split("_")[0]
+
+                    if gene1 == gene2:
+                        continue
+
+                    exon_output = ",".join(anno1[0]) + "|" + ",".join(anno2[0])
+                    transcript_output = ",".join(anno1[1]) + "|" + ",".join(anno2[1])
+                    outputStringList = [chrom, Pos, gene1, chrom2, breakpoint2, gene2, fusionType, Alt, gene1 + "-" + gene2, str(PR_alt), str(SR_alt), str(DP), VAF, exon_output, transcript_output]
+
+                    outputString = "\t".join(outputStringList)
+                    print(outputString)
+                    svAnno.write(outputString + "\tLumpy\n")
+        svFile.close()
+        
+        # manta
+        svFile = open("~{mantaVcf}", "r")
+        for line in svFile:
+            if line.startswith("#"):
+                continue
+            else:
+                lineAfterSplit = line.split("\t")
+                chrom = lineAfterSplit[0]
+                Pos = lineAfterSplit[1]
+                ID = lineAfterSplit[2]
+                Ref = lineAfterSplit[3]
+                Alt = lineAfterSplit[4]
+                Qual = lineAfterSplit[5]
+                Filter = lineAfterSplit[6]
+                Info = lineAfterSplit[7]
+                Format = lineAfterSplit[8]
+
+                if pairID == "":
+                    Sample = lineAfterSplit[9]
+                else:
+                    Sample = lineAfterSplit[10]
+
+                if chrom == "chrM":
+                    continue
+
+                if ":" in Format:
+                    S = Sample.split(":")
+                    PR = S[0].split(",")
+                    SR = S[1].split(",")
+                    PR_ref = int(PR[0])
+                    PR_alt = int(PR[1])
+                    SR_ref = int(SR[0])
+                    SR_alt = int(SR[1])
+                else:
+                    PR = Sample.split(",")
+                    PR_ref = int(PR[0])
+                    PR_alt = int(PR[1])
+                    SR_ref = SR_alt = 0
+
+                DP = PR_ref + SR_ref + PR_alt + SR_alt
+                VAF = "%.2f" % (100 * float(PR_alt + SR_alt) / DP) + "%"
+
+                if ("[" in Alt) or ("]" in Alt):
+                    if chrom in Alt:
+                        fusionType = "Inversion"
+                    else:
+                        fusionType = "Translocation"
+
+                    # G    [chr1:1111111[G
+                    if Alt[0] == "[":
+                        chrom2 = Alt.split(":")[0].split("[")[1]
+                        breakpoint2 = Alt.split(":")[1].split("[")[0]
+                        strand = "--"
+                    
+                    # G    G[chr1:1111111[
+                    elif Alt[-1] == "[":
+                        chrom2 = Alt.split(":")[0].split("[")[1]
+                        breakpoint2 = Alt.split(":")[1].split("[")[0]
+                        strand = "+-"
+
+                    # G    ]chr1:1111111]G
+                    elif Alt[0] == "]":
+                        chrom2 = Alt.split(":")[0].split("]")[1]
+                        breakpoint2 = Alt.split(":")[1].split("]")[0]
+                        strand = "-+"
+
+                    # G    G]chr1:1111111]
+                    elif Alt[-1] == "]":
+                        chrom2 = Alt.split(":")[0].split("]")[1]
+                        breakpoint2 = Alt.split(":")[1].split("]")[0]
+                        strand = "++"
+
+                    else:
+                        chrom2 = "Unknown"
+                        breakpoint2 = "Unknown"
+                        strand = "Unknown"
+                        print("can not analysis: " + ID)
+
+                    anno1 = checkFusionHotSpot(strand[0], chrom, Pos)
+                    if chrom2 != "Unknown":
+                        anno2 = checkFusionHotSpot(strand[1], chrom2, breakpoint2)
+                    else:
+                        anno2 = [["GeneUnknown_exon?"], ["Transcript?"]]
+
+                    gene1 = anno1[0][0].split("_")[0]
+                    gene2 = anno2[0][0].split("_")[0]
+
+                    if gene1 == gene2:
+                        continue
+
+                    exon_output = ",".join(anno1[0]) + "|" + ",".join(anno2[0])
+                    transcript_output = ",".join(anno1[1]) + "|" + ",".join(anno2[1])
+                    outputStringList = [chrom, Pos, gene1, chrom2, breakpoint2, gene2, fusionType, Alt, gene1 + "-" + gene2, str(PR_alt), str(SR_alt), str(DP), VAF, exon_output, transcript_output]
+
+                    outputString = "\t".join(outputStringList)
+                    print(outputString)
+                    svAnno.write(outputString + "\tManta\n")        
+        svFile.close()
+        svAnno.close()
+
+        CODE
+    >>>
+
+    output {
+        File svAnno = "~{sample}.fusion.txt"
+    }
 }

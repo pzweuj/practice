@@ -3,9 +3,10 @@ version 1.0
 # 20210517
 # Lung Cancer Tumor-only mode(FFPE)
 
-import "../Task/QC.wdl" as qc
-import "../Task/Mapping.wdl" as mapping
-import "../Task/Mutation.wdl" as mutation
+import "QC.wdl" as qc
+import "Mapping.wdl" as mapping
+import "Mutation.wdl" as mutation
+import "SV.wdl" as sv
 
 workflow Lung {
     input {
@@ -17,6 +18,7 @@ workflow Lung {
 
     File bed = "/home/bioinfo/ubuntu/database/hg19/cnv/tmerge.bed"
     Int depth = "1000"
+    Float maf = "0.02"
 
     call qc.Fastp as QC {
         input:
@@ -80,10 +82,53 @@ workflow Lung {
             bed = bed
     }
 
-    call mutation.Filter as vcfFilter {
+    call mutation.Filter as VcfFilter {
         input:
             sample = sample,
             vcf = Mutect2.vcf,
             depth = depth
     }
+
+    call sv.Lumpy as Lumpy {
+        input:
+            sample = sample,
+            threads = threads,
+            bam = Mapping.sortBam,
+            bai = Mapping.sortBamBai
+    }
+
+    call sv.Manta as Manta {
+        input:
+            sample = sample,
+            threads = threads,
+            bam = Mapping.sortBam,
+            bai = Mapping.sortBamBai
+    }
+
+    call sv.LumpyFilter as LumpyFilter {
+        input:
+            sample = sample,
+            bam = Mapping.sortBam,
+            bai = Mapping.sortBamBai,
+            vcf = Lumpy.vcf,
+            depth = depth,
+            maf = maf
+    }
+
+    call sv.MantaFilter as MantaFilter {
+        input:
+            sample = sample,
+            vcf = Manta.vcf,
+            depth = depth,
+            maf = maf
+    }
+
+    call sv.FusionAnno as FusionAnnotation {
+        input:
+            sample = sample,
+            pair = "",
+            lumpyVcf = LumpyFilter.vcfFilter,
+            mantaVcf = MantaFilter.vcfFilter
+    }
+
 }
