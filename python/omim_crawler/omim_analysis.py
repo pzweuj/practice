@@ -44,11 +44,11 @@ def getTable(soup):
                 geneNum = tds[6].get_text().strip() if tds[6].get_text().strip() != "" else "."
             else:
                 continue
-            outputString = outputString + "[" + "|".join([location, phenotype, mimNumber, inheritance, mappingKey, gene, geneNum]) +"];"
-    return outputString.rstrip(";") if outputString != "" else "."
+            outputString = outputString + "[" + "|".join([location, phenotype, mimNumber, inheritance, mappingKey, gene, geneNum]) +"]##"
+    return outputString.rstrip("##") if outputString != "" else "."
 
 # clinical synopsis
-def getClinicalFold(soup):
+def getClinicalFold(soup, filter=False):
     clinicalSynopsisFoldList = soup.select("#clinicalSynopsisFold")
     childStringDiv = "."
     if len(clinicalSynopsisFoldList) != 0:
@@ -58,13 +58,26 @@ def getClinicalFold(soup):
         for i in range(len(childDiv) - 1):
             childDivList = childDiv[i].get_text().replace("\n", "").strip().split(" - ")
             headerDiv = childDivList[0].strip()
+            if filter:
+                if headerDiv == "INHERITANCE":
+                    continue
+                if headerDiv == "MOLECULAR BASIS":
+                    continue
+                if headerDiv == "Inheritance":
+                    continue
             stringDiv = ""
             for i in range(len(childDivList)):
                 if i != 0:
-                    stringDiv = stringDiv + childDivList[i].strip() + "; "
-            stringDiv = headerDiv + ": " + stringDiv.rstrip("; ")
-            childStringDiv = childStringDiv + stringDiv + " | "
-        childStringDiv = childStringDiv.rstrip(" | ")
+                    if filter:
+                        stringDiv = stringDiv + childDivList[i].strip().split(" [")[0] + ", "
+                    else:
+                        stringDiv = stringDiv + childDivList[i].strip() + ", "
+            if filter:
+                stringDiv = stringDiv.rstrip(", ")
+            else:
+                stringDiv = headerDiv + ": " + stringDiv.rstrip(", ")
+            childStringDiv = childStringDiv + stringDiv + "; "
+        childStringDiv = childStringDiv.rstrip("; ")
     return childStringDiv
 
 # description
@@ -74,12 +87,32 @@ def getDescription(soup):
     return descriptionFold
 
 # combine
-def main(inputDir, outputFile):
+def main(mimGene, inputDir, outputFile):
+    mimGenes = open("mim2gene.txt", "r", encoding="utf-8")
+    mimGenesDict = {}
+    for line in mimGenes:
+        if line.startswith("#"):
+            continue
+        elif line.startswith("ID"):
+            continue
+        else:
+            lines = line.split("\t")
+            id = lines[0]
+            gene = lines[3]
+            mimGenesDict[id] = gene
+    mimGenes.close()
+
     outputs = open(outputFile, "w", encoding="utf-8")
-    outputs.write("#MimNum\tTitle\tTable\tDescription\tClinical\tURL\n")
+    outputs.write("#MimNum\tGene\tTitle\tTable\tDescription\tClinical\tFilter\tURL\n")
     for i in os.listdir(inputDir):
         if ".html" in i:
+            print("正在解析：", i)
             mimNum = i.split(".html")[0]
+            gene = "."
+            try:
+                gene = mimGenesDict[mimNum]
+            except:
+                pass
             url = "https://omim.org/entry/{}".format(mimNum)
             html = open(inputDir + "/{}.html".format(mimNum), "r", encoding="utf-8")
             soup = BeautifulSoup(html, "lxml")
@@ -87,9 +120,10 @@ def main(inputDir, outputFile):
             title = getTitle(soup, mimNum)
             table = getTable(soup)
             clinical = getClinicalFold(soup)
+            clinical_filt = getClinicalFold(soup, True)
             des = getDescription(soup)
-            output = "\t".join([mimNum, title, table, des, clinical, url])
+            output = "\t".join([mimNum, gene, title, table, des, clinical, clinical_filt, url])
             outputs.write(output + "\n")
     outputs.close()
 
-main("entry", "test.txt")
+main("mim2gene.txt", "entry", "test.txt")
