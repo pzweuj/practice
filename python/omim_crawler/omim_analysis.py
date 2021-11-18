@@ -88,7 +88,7 @@ def getDescription(soup):
 
 # combine
 def main(mimGene, inputDir, outputFile):
-    mimGenes = open("mim2gene.txt", "r", encoding="utf-8")
+    mimGenes = open(mimGene, "r", encoding="utf-8")
     mimGenesDict = {}
     for line in mimGenes:
         if line.startswith("#"):
@@ -108,17 +108,28 @@ def main(mimGene, inputDir, outputFile):
         if ".html" in i:
             print("正在解析：", i)
             mimNum = i.split(".html")[0]
-            gene = "."
-            try:
-                gene = mimGenesDict[mimNum]
-            except:
-                pass
+            gene = mimGenesDict[mimNum]
             url = "https://omim.org/entry/{}".format(mimNum)
             html = open(inputDir + "/{}.html".format(mimNum), "r", encoding="utf-8")
             soup = BeautifulSoup(html, "lxml")
             html.close()
             title = getTitle(soup, mimNum)
             table = getTable(soup)
+            if gene == "":
+                if table == ".":
+                    gene = "."
+                else:
+                    genes = table.split("##")
+                    gene_list = []
+                    for g in genes:
+                        gg = g.split("|")[5]
+                        if not gg == ".":
+                            gene_list.append(gg)
+                    if len(gene_list) == 0:
+                        gene = "."
+                    else:
+                        gene = ",".join(gene_list)
+
             clinical = getClinicalFold(soup)
             clinical_filt = getClinicalFold(soup, True)
             des = getDescription(soup)
