@@ -125,6 +125,7 @@ def main(mimGene, inputDir, outputFile):
                         gg = g.split("|")[5]
                         if not gg == ".":
                             gene_list.append(gg)
+                    gene_list = list(set(gene_list))
                     if len(gene_list) == 0:
                         gene = "."
                     else:
