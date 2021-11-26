@@ -55,12 +55,12 @@ def normalization(table, clsList):
     return df
 
 # 模型测试
-def testModel(xtest, saveModel, clsList):
-    clfLoad = model_load(saveModel)
-    predict_clf = list(clfLoad.predict(xtest))
+def testModel(xtest, clf, clsList):
+    predict_clf = list(clf.predict(xtest))
     predict_transform = []
     for pc in predict_clf:
         predict_transform.append(clsList[pc])
+    name_test = xtest.index
     sampleName = list(name_test)
     zipped = list(zip(sampleName, predict_transform))
     return zipped
@@ -88,7 +88,7 @@ def feature_plot(df, picName):
 
 # 模型训练
 def ownLinearSVC(xtrain, ytrain):
-    model = make_pipeline(StandardScaler(), LinearSVC(random_state=0, tol=1e-4, C=1.1))
+    model = make_pipeline(StandardScaler(), LinearSVC(random_state=0, tol=1e-4, max_iter=1000, C=1.0))
     clf = model.fit(xtrain, ytrain)
     return clf
 
@@ -96,11 +96,11 @@ def ownLinearSVC(xtrain, ytrain):
 ####################################################
 trainTable = "CountMatrix/TCGA.train.txt"
 testTable = "CountMatrix/TCGA.test.txt"
-saveModel = "Model/TCGA.LinearSVC.CancerNormal.model"
-results = "Results/TCGA.LinearSVC.CancerNormal.results.txt"
-featureFile = "FeatureRank/TCGA.LinearSVC.CancerNormal.FeatureRank.txt"
-featurePic = "FeatureRank/TCGA.LinearSVC.CancerNormal.FeatureRank.Top20.png"
-typeList = ["Control", "PRAD,NSCLC,SKCM"]
+saveModel = "Model/TCGA.LinearSVC.OtherVsSKCM.model"
+results = "Results/TCGA.LinearSVC.OtherVsSKCM.results.txt"
+featureFile = "FeatureRank/TCGA.LinearSVC.OtherVsSKCM.FeatureRank.txt"
+featurePic = "FeatureRank/TCGA.LinearSVC.OtherVsSKCM.FeatureRank.Top20.png"
+typeList = ["Control,PRAD,NSCLC", "SKCM"]
 ####################################################
 
 ## 分析流程
@@ -109,12 +109,10 @@ print(train)
 xtrain = train.iloc[:, 2:]
 ytrain = train["Class"]
 ytrain = ytrain.astype("int")
-name_train = train.index
 test = normalization(testTable, typeList)
 xtest = test.iloc[:, 2:]
 ytest = test["Class"]
 ytest = ytest.astype("int")
-name_test = test.index
 clf = ownLinearSVC(xtrain, ytrain)
 df = feature_importance(xtrain, clf, "linearsvc")
 print(df.head(20))
