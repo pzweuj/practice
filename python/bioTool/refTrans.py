@@ -34,6 +34,10 @@ def lrgDict(lrgFile, refDict):
             transcript = lines[4]
             if not symbol in refDict.keys():
                 refDict[symbol] = [transcript, "LRG"]
+            # LRG与MANE中倾向于更小的编号
+            else:
+                if int(transcript.split("_")[1].split(".")[0]) < int(refDict[symbol][0].split("_")[1].split(".")[0]):
+                    refDict[symbol] = [transcript, "LRG"]
     lrg.close()
     return refDict
 
@@ -70,7 +74,7 @@ def clinvarDict(clinvarFile, refDict):
                     refDict[symbol] = [transcript, "Clinvar"]
                 else:
                     if refDict[symbol][1] == "Clinvar":
-                        if float(transcript.split("_")[1]) < float(refDict[symbol][0].split("_")[1]):
+                        if int(transcript.split("_")[1].split(".")[0]) < int(refDict[symbol][0].split("_")[1].split(".")[0]):
                             refDict[symbol] = [transcript, "Clinvar"]
     clinvar.close()
     return refDict
@@ -88,6 +92,11 @@ def hgncDict(hgncFile, refDict):
                 transcript = transcript.replace('"', '').split("|")[1]
                 if not symbol in refDict.keys():
                     refDict[symbol] = [transcript, "HGNC"]
+            else:
+                transcript = lines[23]
+                if transcript != "":
+                    if not symbol in refDict.keys():
+                        refDict[symbol] = [transcript, "HGNC"]
     hgnc.close()
     return refDict
 
