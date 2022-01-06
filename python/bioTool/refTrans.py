@@ -1,6 +1,6 @@
 # coding=utf-8
 # pzw
-# 20211216
+# 20220106
 # refTranscript
 # MANE select > LRG > refSeq > Clinvar > HGNC
 
@@ -48,11 +48,16 @@ def refseqDict(refseqFile, refDict):
     for line in refseq:
         if not line.startswith("#"):
             lines = line.replace("\n", "").split("\t")
-            if "reference" in lines[6]:
-                symbol = lines[2]
-                transcript = lines[4]
+            symbol = lines[2]
+            transcript = lines[5]
+            if "NM" in transcript:
                 if not symbol in refDict.keys():
                     refDict[symbol] = [transcript, "refSeq"]
+                # 与MANE、LRG相比，倾向更小的编号
+                else:
+                    if int(transcript.split("_")[1].split(".")[0]) < int(refDict[symbol][0].split("_")[1].split(".")[0]):
+                        refDict[symbol] = [transcript, "refSeq"]
+
     refseq.close()
     return refDict
 
@@ -119,4 +124,7 @@ def main(database):
         refTranscript.write("\t".join(refDict[k]) + "\n")
     refTranscript.close()
 
-main(sys.argv[1])
+try:
+    main(sys.argv[1])
+except:
+    print("usage: python3 refTrans.py /path/to/MANE,LRG,refSeq,Clinvar,HGNC/database")
