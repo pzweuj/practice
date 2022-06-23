@@ -16,7 +16,9 @@ for r in refTranscript:
     if not r.startswith("#"):
         rs = r.split("\t")
         transcript = rs[1].split(".")[0]
-        refDict[transcript] = rs[0]
+        gene = rs[0]
+        if not gene[0].islower():
+            refDict[transcript] = gene
 refTranscript.close()
 
 # bed file
