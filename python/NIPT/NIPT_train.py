@@ -86,25 +86,33 @@ def InputMatrix(dir, ffDict):
 # parameter2: 129.062773589499
 
 ################# 训练 ####################
-df = pd.read_csv("train_male.txt", sep="\t", header=0, index_col=0)
-dft = df.T
-cols = [i for i in dft.columns if i != "ff"]
-X = dft[cols]
-y = dft["ff"]
-regr = ElasticNetCV(cv=10, random_state=0, max_iter=1000)
-regr.fit(X, y)
-model_save(regr, "train_male.model")
+# df = pd.read_csv("train_male.txt", sep="\t", header=0, index_col=0)
+# dft = df.T
+# cols = [i for i in dft.columns if i != "ff"]
+# X = dft[cols]
+# y = dft["ff"]
+# regr = ElasticNetCV(cv=10, random_state=0, max_iter=1000)
+# regr.fit(X, y)
+# model_save(regr, "train_male.model")
 
 ################# 测试 #####################
 df_test = pd.read_csv("test_female.txt", sep="\t", header=0, index_col=0)
 dft_test = df_test.T
 cols_test = [i for i in dft_test.columns if i != "ff"]
-X_test = dft_test[cols]
+X_test = dft_test[cols_test]
 y_test_act = list(dft_test["ff"])
 regr = model_load("train_male.model")
 predict_test = list(regr.predict(X_test))
 zipped = list(zip(y_test_act, predict_test))
+output = open("output.txt", "w")
+output.write("#Name\tReal\tPredict\n")
+sampleNameCounts = 0
+colNameList = list(dft_test.index)
 for z in zipped:
-    print(z[0], z[1])
+    name = colNameList[sampleNameCounts]
+    sampleNameCounts += 1
+    print(name, z[0], z[1])
+    output.write(name + "\t" + str(z[0]) + "\t" + ("%.2f" % z[1]) + "\n")
+output.close()
 
 
