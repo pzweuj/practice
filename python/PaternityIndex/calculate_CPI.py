@@ -194,7 +194,7 @@ def PI_double(loci, alleged, child, frqDB, alleged_gender="male"):
 def calCPI(resultsFile, frqDB, alleged_gender="male"):
     results = open(resultsFile, "r")
     CPI = 1
-    for line in resultsFile:
+    for line in results:
         if not line.startswith("#"):
             lines = line.replace("\n", "").split("\t")
             loci = lines[0]
