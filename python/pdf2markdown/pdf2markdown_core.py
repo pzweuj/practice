@@ -30,7 +30,7 @@ def pdf_to_images(pdf_path, output_folder):
     
     # 打开 PDF 文件
     pdf_document = fitz.open(pdf_path)
-    print(f"[Process] Total pages: {pdf_document.page_count}")
+    # print(f"[Process] Total pages: {pdf_document.page_count}")
     
     # 遍历每一页并将其转换为图像
     for page_num in range(pdf_document.page_count):
@@ -48,8 +48,8 @@ def pdf_to_images(pdf_path, output_folder):
         
         # 保存图像为 JPEG 格式
         img.save(image_filename, "JPEG")
-        print("[Process] Page: " +  f"page_{page_num + 1}")
-    print("[Process] PDF 2 Images Done")
+        # print("[Process] Page: " +  f"page_{page_num + 1}")
+    # print("[Process] PDF 2 Images Done")
 
 # 阿里百炼API调用
 def qwen_vl_api(input_img, api_key):
@@ -133,7 +133,7 @@ def all_images_to_md(input_dir, output_dir, api_key, time_gap=2):
             result = qwen_vl_api(img, api_key)
             md_content = result["content"]
             save_to_md(md_content, output)
-            print(f"[Process] Page {n} VL Done")
+            # print(f"[Process] Page {n} VL Done")
         else:
             break
         n += 1
@@ -181,7 +181,7 @@ def main():
         usage="python3 pdf2markdown_core.py [-h] -i <input pdf> -o <output markdown> -t <title> -k <api key>",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("-v", "--version", action="version", version="Version 0.1 20250214")
+    parser.add_argument("-v", "--version", action="version", version="Version 0.1 20250218")
     parser.add_argument("-i", "--input", type=str, help="输入pdf")
     parser.add_argument("-o", "--output", type=str, help="输出markdown")
     parser.add_argument("-t", "--title", type=str, help="输出markdown文件的一级标题", default="默认标题")
