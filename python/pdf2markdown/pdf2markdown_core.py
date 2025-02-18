@@ -148,7 +148,14 @@ def merge_all_markdown(input_dir, output_md, title="默认标题"):
             page = os.path.join(input_dir, f"page_{n}.md")
             if os.path.exists(page):
                 with open(page, "r", encoding="utf-8") as p:
+                    mark = False
                     for line in p:
+                        if line.startswith("```start"):
+                            mark = True
+                            continue
+                        if line.startswith("```") and mark:
+                            mark = False
+                            continue
                         line = re.sub(r'^(#+) ', r'#\1 ', line)
                         f.write(line)
             else:
