@@ -10,7 +10,7 @@ import sys
 import fitz
 from PIL import Image
 import base64
-from openai import OpenAI
+from openai import OpenAI, APIError
 import time
 from datetime import datetime
 import re
@@ -56,15 +56,16 @@ def qwen_vl_api(input_img, api_key):
     model = "qwen2.5-vl-7b-instruct"
     api_base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
     
+    # 获取图片路径并读取为 Base64 编码
     input_img_path = os.path.abspath(input_img)
     with open(input_img_path, "rb") as image_file:
         base64_image = base64.b64encode(image_file.read()).decode("utf-8")
-
+    
     client = OpenAI(
         api_key=api_key,
         base_url=api_base_url,
     )
-
+    
     prompt = """
     请仔细分析图片内容，将图片中的文字和表格信息转换为规范的markdown格式。具体要求如下：
     1. 识别所有文字内容，按原格式保留段落、标题、列表等结构
@@ -74,33 +75,46 @@ def qwen_vl_api(input_img, api_key):
     5. 对于列表内容，使用-或*标记
     6. 确保转换后的markdown格式规范，可直接用于文档编写
     7. 如果图片中包含代码块，请使用```标记进行包裹
-    8. 如果是一张不包含信息的图片，则使用<img_start> <img_end>标签进行标记，并在标签内描述图片的内容
-    9. 保持原始内容的准确性，不要添加或删除任何信息
+    8. 非代码块内容，不要用```标记进行包裹
+    9. 如果是一张不包含信息的图片，则使用<img_start> <img_end>标签进行标记，并在标签内描述图片的内容
+    10. 保持原始内容的准确性，不要添加或删除任何信息
     """
-
-    completion = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user","content": [
-                {"type": "text","text": prompt},
-                {"type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
+    
+    max_retries = 5  # 最大重试次数
+    retry_count = 0  # 当前重试次数
+    
+    while retry_count < max_retries:
+        try:
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url",
+                     "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
                 ]}]
-        )
-    
-    # 解析返回结果
-    markdown_content = completion.choices[0].message.content
-    
-    # 将 Markdown 内容封装为一个字典对象
-    markdown_object = {
-        "title": "Extracted Content from Image",
-        "content": markdown_content,
-        "metadata": {
-            "model": model,
-            "input_image_path": "file://" + input_img_path,
-            "api_base_url": api_base_url
-        }
-    }
-    return markdown_object
+            )
+            
+            # 解析返回结果
+            markdown_content = completion.choices[0].message.content
+            
+            # 将 Markdown 内容封装为一个字典对象
+            markdown_object = {
+                "title": "Extracted Content from Image",
+                "content": markdown_content,
+                "metadata": {
+                    "model": model,
+                    "input_image_path": "file://" + input_img_path,
+                    "api_base_url": api_base_url
+                }
+            }
+            return markdown_object
+        
+        except APIError as e:
+            retry_count += 1
+            print(f"请求失败，正在进行第 {retry_count} 次重试。错误信息: {e}")
+            if retry_count >= max_retries:
+                print("[Error] ", input_img_path, "已达到最大重试次数，请求仍然失败。")
+                raise  # 抛出异常以终止程序
 
 # 保存为一个markdown
 def save_to_md(content, output_file):
