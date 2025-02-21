@@ -45,7 +45,7 @@ def collect_pdf_links(playwright: Playwright) -> None:
         cancer_links = page.query_selector_all('a[href*="guidelines-detail"]')
         cancer_info = []
         for link in cancer_links:
-            name = link.inner_text().strip().replace('\', '&')
+            name = link.inner_text().strip().replace('\', '&').replace(':', '-')
             href = link.get_attribute("href")
             cancer_info.append({"name": name, "url": href})
         
