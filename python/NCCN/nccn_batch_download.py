@@ -101,59 +101,96 @@ def collect_pdf_links(playwright: Playwright) -> None:
 
 def download_pdfs(playwright: Playwright) -> None:
     """第二阶段：读取results.txt并下载PDF"""
+    import os
+    import time
+    from playwright.sync_api import Download
+
     # 启动浏览器
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
     page.add_init_script(path="stealth.min.js")
-    
+
     try:
+        # 设置PDF路由拦截
+        def handle_pdf_route(route):
+            response = route.fetch()
+            headers = {
+                **response.headers,
+                'Content-Disposition': 'attachment; filename="filename.pdf"'
+            }
+            route.fulfill(response=response, headers=headers)
+
+        page.route('**/*.pdf', handle_pdf_route)
+
         # 跳转到登录页面
         print("跳转到登录页面...")
         page.goto("https://www.nccn.org/login")
         time.sleep(2)
-        
+
         # 输入账户和密码
         print("输入账户和密码...")
         page.locator("#Username").fill("[账户]")
         time.sleep(5)  # 等待登录完成
         page.get_by_label("Password").fill("[密码]")
-        page.get_by_role("button", name="Log in").click()
-        time.sleep(5)  # 等待登录完成
-        
+        login_button = page.get_by_role("button", name="Log in")
+        login_button.click()
+        page.wait_for_load_state('networkidle')  # 等待页面加载完成
+
         # 读取results.txt文件
         with open(log_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
-        
         # 跳过表头
         lines = lines[2:]
-        
+
         for line in lines:
-            cancer_name, version, pdf_url = line.strip().split(" | ")
-            pdf_url = pdf_url.strip()
-            if pdf_url == "未找到PDF链接":
-                print(f"跳过 {cancer_name}，未找到PDF链接")
+            try:
+                cancer_name, version, pdf_url = line.strip().split(" | ")
+                pdf_url = pdf_url.strip()
+                if pdf_url == "未找到PDF链接":
+                    print(f"跳过 {cancer_name}，未找到PDF链接")
+                    continue
+                print(f"正在处理 {cancer_name} 的PDF文件...")
+                # 构造文件名
+                file_name = f"[NCCN][{cancer_name}][{version}].pdf"
+                file_path = os.path.join("pdfs", file_name)
+
+                # 如果已存在，就跳过
+                if os.path.exists(file_path):
+                    print(f"跳过 {cancer_name}，文件已存在")
+                    continue
+
+                # 确保pdfs文件夹存在
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+                # 监听下载事件
+                with page.expect_download() as download_info:
+                    try:
+                        print(f"导航到PDF URL: {pdf_url}")
+                        pdf_url = "https://www.nccn.org" + pdf_url
+                        page.goto(pdf_url, timeout=5000)
+                        page.wait_for_timeout(1000)  # 等待下载开始
+                    except:
+                        download = download_info.value
+                        print(f"下载完成，保存到 {file_path}")
+                        download.save_as(file_path)
+
+                # 等待30秒，避免过快请求
+                time.sleep(30)
+
+            except Exception as e:
+                print(f"在处理 {cancer_name} 时发生错误: {str(e)}")
                 continue
-            
-            print(f"正在下载 {cancer_name} 的PDF文件...")
-            
-            # 构造文件名
-            file_name = f"[NCCN][{cancer_name}][{version}].pdf"
-            file_path = os.path.join("pdfs", file_name)
-            
-            # 使用Playwright下载PDF
-            with page.expect_download() as download_info:
-                page.goto("https://www.nccn.org" + pdf_url)  # 访问PDF链接
-            download = download_info.value
-            download.save_as(file_path)
-            print(f"PDF下载成功: {file_path}")
-    
+
+    except Exception as e:
+        print(f"主程序执行出错: {str(e)}")
     finally:
         # 关闭浏览器
+        print("关闭浏览器...")
         page.close()
         context.close()
         browser.close()
-
+        
 with sync_playwright() as playwright:
     # 第一阶段：收集PDF链接 || 如已完成，注释掉第一阶段
     collect_pdf_links(playwright)
