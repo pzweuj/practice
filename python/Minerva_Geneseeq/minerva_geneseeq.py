@@ -51,7 +51,7 @@ class MinervaResult:
 class MinervaCalculator:
     """MINERVA评分计算器"""
     
-    # 基因评分权重（来自tet.html中的calc方法）
+    # 基因评分权重（来自html中的calc方法）
     GENE_SCORES = {
         'rb1': 2.88,    # RB1阳性时的评分
         'nkx2': -2.72,  # NKX2-1阳性时的评分
