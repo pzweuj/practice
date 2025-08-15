@@ -168,10 +168,10 @@ def parse_arguments():
   python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del
   
   # 完整用法（包含基因突变信息）
-  python minerva_geneseeq.py --cancer-staging IB --egfr L858R --rb1 mut --tp53 --nkx2 --myc --cdk4
+  python minerva_geneseeq.py --cancer-staging IB --egfr L858R --rb1 --tp53 --nkx2 --myc --cdk4
   
   # RB1缺失示例
-  python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del --rb1 del --tp53
+  python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del --rb1 --tp53
   
   # 其他EGFR突变示例
   python minerva_geneseeq.py --cancer-staging IIA --egfr other --myc --cdk4
@@ -318,10 +318,10 @@ def main():
   python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del
   
   # 完整用法（包含基因突变信息）
-  python minerva_geneseeq.py --cancer-staging IB --egfr L858R --rb1 mut --tp53 --nkx2 --myc --cdk4
+  python minerva_geneseeq.py --cancer-staging IB --egfr L858R --rb1 --tp53 --nkx2 --myc --cdk4
   
   # RB1缺失示例
-  python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del --rb1 del --tp53
+  python minerva_geneseeq.py --cancer-staging IIIA --egfr 19del --rb1 --tp53
   
   # 其他EGFR突变示例
   python minerva_geneseeq.py --cancer-staging IIA --egfr other --myc --cdk4
